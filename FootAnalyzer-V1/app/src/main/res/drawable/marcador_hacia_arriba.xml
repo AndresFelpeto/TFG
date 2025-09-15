@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="32">
+
+    <!-- Triángulo arriba -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M4,12 L12,0 L20,12 Z" />
+
+    <!-- Cuadrado debajo -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M4,12 H20 V32 H4 Z" />
+</vector>

@@ -1,0 +1,99 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ResultActivity">
+
+    <TextView
+        android:id="@+id/title1"
+        android:layout_width="134dp"
+        android:layout_height="82dp"
+        android:fontFamily="@font/centurygothic_bold"
+        android:text="RUN"
+        android:textColor="@color/black"
+        android:textSize="60sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/title2"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.12" />
+
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/centurygothic"
+        android:text="alyzed"
+        android:textColor="@color/black"
+        android:textSize="60sp"
+        app:layout_constraintBottom_toBottomOf="@id/title1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/title1"
+        app:layout_constraintTop_toTopOf="@id/title1" />
+
+    <ImageView
+        android:id="@+id/pie_izquierdo"
+        android:layout_width="190dp"
+        android:layout_height="281dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="236dp"
+        android:src="@drawable/pie_izquierdo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/pie_derecho"
+        android:layout_width="183dp"
+        android:layout_height="281dp"
+        android:layout_marginStart="212dp"
+        android:layout_marginTop="236dp"
+        android:src="@drawable/pie_derecho"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="191dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="528dp"
+        android:fontFamily="@font/centurygothic"
+        android:text="Neutro"
+        android:textAlignment="center"
+        android:textColor="#050505"
+        android:textSize="34sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="197dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="192dp"
+        android:layout_marginTop="528dp"
+        android:fontFamily="@font/centurygothic"
+        android:text="Neutro"
+        android:textAlignment="center"
+        android:textColor="#050505"
+        android:textSize="34sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/botonGuardarVideoEnGaleria"
+        android:layout_width="176dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="72dp"
+        android:background="@android:color/transparent"
+        android:text="Guardar video en la galería"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

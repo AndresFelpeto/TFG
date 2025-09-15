@@ -1,0 +1,86 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_main"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="390dp"
+        android:layout_height="785dp"
+        android:layout_marginEnd="4dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="0dp"
+        tools:ignore="MissingConstraints">
+
+
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="134dp"
+            android:layout_height="82dp"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="44dp"
+            android:fontFamily="@font/centurygothic_bold"
+            android:text="RUN"
+            android:textColor="@color/black"
+            android:textSize="60sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title4"
+            android:layout_width="155dp"
+            android:layout_height="85dp"
+            android:fontFamily="@font/centurygothic"
+            android:text="alyze"
+            android:textColor="@color/black"
+            android:textSize="60sp"
+            app:layout_constraintStart_toEndOf="@id/title3"
+            app:layout_constraintTop_toTopOf="@id/title3" />
+
+        <ImageButton
+            android:id="@+id/botonSeleccionarVideo"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginBottom="256dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/seleccionar_video"
+            android:scaleType="fitXY"
+            android:src="@drawable/cruz"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:id="@+id/pie_blanco"
+            android:layout_width="126dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="348dp"
+            android:src="@drawable/pie_blanco"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/pie_negro"
+            android:layout_width="126dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="236dp"
+            android:layout_marginTop="348dp"
+            android:src="@drawable/pie_negro"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
