@@ -5,8 +5,8 @@ from datetime import datetime
 import threading
 import time
 
-from Foot_Step_Recognition import ProgressStep
-from VideoAnalyzer import analyze_video, ProgressAnalyzer
+from Progress import Progress
+from VideoAnalyzer import analyze_video
 
 app = Flask(__name__)
 procesos = {}
@@ -27,14 +27,14 @@ def procesar_video(pid, filepath):
         print(f"✅ Análisis completado para {pid}")
     except Exception as e:
         procesos[pid]["status"] = "error"
-        procesos[pid]["error"] = str(e)
+        procesos[pid]["error"] = "Error procesando el video"
         print(f"❌ Error procesando {pid}: {e}")
 
 @app.route("/upload", methods=["POST"])
 def upload_video():
     pid = str(uuid.uuid4())
-    progress_step = ProgressStep()
-    progress_analyzer = ProgressAnalyzer()
+    progress_step = Progress()
+    progress_analyzer = Progress()
     procesos[pid] = {
         "status": "processing",
         "remaining": 1,

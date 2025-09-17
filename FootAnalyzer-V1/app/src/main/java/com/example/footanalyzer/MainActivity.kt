@@ -138,10 +138,15 @@ class MainActivity : AppCompatActivity() {
                     }
                 },
                 onError = { err ->
-                    Log.e("Client", "Error en polling /request: ${err?.message}")
-                    // Reintenta en el próximo ciclo
-                    handler.postDelayed({ tick() }, pollingIntervalMs)
+                    polling = false
+                    runOnUiThread {
+                        LoadingDialogManager.taskComplete()
+                        val intent = Intent(this, ErrorActivity::class.java)
+                        intent.putExtra("error_message", err?.message ?: "Error desconocido al consultar el servidor.")
+                        startActivity(intent)
+                    }
                 }
+
             )
         }
 

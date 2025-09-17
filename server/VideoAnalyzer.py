@@ -2,21 +2,8 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
-from Foot_Step_Recognition import foot_step_frames,ProgressStep
-
-class ProgressAnalyzer:
-    def __init__(self):
-        self.total = 0
-        self.current = 0
-        self.done = False
-
-    def remaining_frames(self) -> int:
-        return max(0, self.total - self.current)
-
-    def remaining_percent(self) -> int:
-        if self.total <= 0:
-            return 100 if not self.done else 0
-        return max(0, 100 - int((self.current / self.total) * 100))
+from Foot_Step_Recognition import foot_step_frames
+from Progress import Progress
 
 def calculate_angle(ankle, knee, lado='izquierdo'):
     vec_leg = np.array([ankle[0] - knee[0], ankle[1] - knee[1]])
@@ -39,22 +26,36 @@ def classify_rearfoot_angle_label(angle):
     else:
         return "Neutro"
 
-def mean_data(valores):
+
+def mean_data(valores, k=2):
+    """
+    Calcula la media robusta de una lista de valores,
+    descartando aquellos que se desvían más de k*desviaciones estándar.
+    Parámetros:
+        valores: lista de ángulos
+        k: factor de tolerancia (por defecto 2σ)
+    """
     if not valores:
         return None
-    valores_ordenados = sorted(valores)
-    n = len(valores_ordenados)
-    n_20 = max(1, int(n * 0.2))
-    inicio = (n - n_20) // 2
-    fin = inicio + n_20
-    central_20 = valores_ordenados[inicio:fin]
-    return np.mean(central_20)
 
-def analyze_video(video_path, progress: ProgressAnalyzer | None = None,progress_step: ProgressStep | None = None):
+    media = np.mean(valores)
+    std = np.std(valores)
+
+    # Filtrar valores dentro del rango [media - k*σ, media + k*σ]
+    filtrados = []
+    for v in valores:
+        if abs(v - media)<=k*std:
+            filtrados.append(v)
+
+    # Si todos fueron descartados, devolver la media original
+    return np.mean(filtrados) if filtrados else media
+
+
+def analyze_video(video_path, progress: Progress | None = None,progress_step: Progress | None = None):
     mp_pose = mp.solutions.pose
     pose = mp_pose.Pose()
     if progress_step is None:
-        progress_step=ProgressStep()
+        progress_step=Progress()
     pisadas_final_d, pisadas_final_i,_ = foot_step_frames(video_path,progress_step)
 
     cap = cv2.VideoCapture(video_path)
@@ -63,7 +64,7 @@ def analyze_video(video_path, progress: ProgressAnalyzer | None = None,progress_
     out_path = os.path.join("videos_resultado", os.path.basename(video_path))
 
     if progress is None:
-        progress = ProgressAnalyzer()
+        progress = Progress()
 
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1
     progress.total = total_frames
@@ -154,4 +155,5 @@ def analyze_video(video_path, progress: ProgressAnalyzer | None = None,progress_
         print(f"Media pie derecho: {avg_right:.2f}° - {angle_right_foot}")
 
     print(f"🎞️ Video generado con ángulos de pisada: {out_path}")
+    pose.close()
     return out_path, avg_left, avg_right

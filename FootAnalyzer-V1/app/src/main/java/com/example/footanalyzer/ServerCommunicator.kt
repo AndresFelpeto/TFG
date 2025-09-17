@@ -117,6 +117,7 @@ class ServerCommunicator(private val context: Context) {
                                 onProgress(remaining)
                             } else{
                                 onError(IOException(json.optString("message", "Error servidor")))
+
                             }
                         } catch (e: Exception) {
                             onError(e)

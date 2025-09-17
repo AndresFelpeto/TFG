@@ -1,22 +1,9 @@
 import cv2
 import mediapipe as mp
-
-class ProgressStep:
-    def __init__(self):
-        self.total = 0
-        self.current = 0
-        self.done = False
-
-    def remaining_frames(self) -> int:
-        return max(0, self.total - self.current)
-
-    def remaining_percent(self) -> int:
-        if self.total <= 0:
-            return 100 if not self.done else 0
-        return max(0, 100 - int((self.current / self.total) * 100))
+from Progress import Progress
 
 
-def foot_step_frames(video_path, progress: ProgressStep | None = None):
+def foot_step_frames(video_path, progress: Progress | None = None):
     mp_pose = mp.solutions.pose
     pose = mp_pose.Pose(static_image_mode=False)
 
@@ -26,7 +13,7 @@ def foot_step_frames(video_path, progress: ProgressStep | None = None):
         raise FileNotFoundError(f"No se pudo abrir el video: {video_path}")
 
     if progress is None:
-        progress = ProgressStep()
+        progress = Progress()
 
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     
@@ -126,10 +113,12 @@ def foot_step_frames(video_path, progress: ProgressStep | None = None):
                 pisadas_finales.append(mejor_frame)
         return pisadas_finales
 
+    pisadas_final_d=None
+    pisadas_final_i=None
     pisadas_final_d = refinar_frames(pisadas_detectadas_d, altura_heel_d_por_frame)
     pisadas_final_i = refinar_frames(pisadas_detectadas_i, altura_heel_i_por_frame)
 
     progress.done = True
     progress.current = progress.total
-
+    
     return pisadas_final_d, pisadas_final_i, progress
