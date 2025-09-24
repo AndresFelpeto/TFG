@@ -120,5 +120,4 @@ def foot_step_frames(video_path, progress: Progress | None = None):
 
     progress.done = True
     progress.current = progress.total
-    
     return pisadas_final_d, pisadas_final_i, progress

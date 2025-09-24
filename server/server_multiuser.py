@@ -30,7 +30,7 @@ def procesar_video(pid, filepath):
         procesos[pid]["error"] = "Error procesando el video"
         print(f"❌ Error procesando {pid}: {e}")
 
-@app.route("/upload", methods=["POST"])
+@app.route("/upload_video", methods=["POST"])
 def upload_video():
     pid = str(uuid.uuid4())
     progress_step = Progress()
@@ -64,7 +64,7 @@ def upload_video():
         "message": "Video recibido, procesando"
     }), 200
 
-@app.route("/request", methods=["GET"])
+@app.route("/request_video", methods=["GET"])
 def send_video():
     pid = request.args.get("process_id")
     if not pid or pid not in procesos:
@@ -87,7 +87,7 @@ def send_video():
     print(f"🎥 Enviando video procesado: {processed_video_path}")
     return send_file(processed_video_path, mimetype="video/mp4")
 
-@app.route("/get_pisada", methods=["GET"])
+@app.route("/get_results", methods=["GET"])
 def get_pisada():
     pid = request.args.get("process_id")
     if not pid or pid not in procesos:

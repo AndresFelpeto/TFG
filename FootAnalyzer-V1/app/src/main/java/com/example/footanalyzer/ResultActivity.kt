@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import org.json.JSONObject
 import android.util.Log
 import org.json.JSONException
 import android.widget.Button
@@ -24,7 +23,7 @@ class ResultActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_result2)
+        setContentView(R.layout.activity_result)
 
         val rootView = findViewById<View>(R.id.root_layout2) // ID del layout raíz
         val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in_result)
@@ -79,13 +78,6 @@ class ResultActivity : AppCompatActivity() {
             val resultTextView2: TextView = findViewById(R.id.textView2)
             resultTextView2.text = "Error al procesar segundo resultado"
         }
-        //} else {
-          /*  val resultTextView: TextView = findViewById(R.id.textView)
-            resultTextView.text = "No se recibio el resultado"
-
-            val resultTextView2: TextView = findViewById(R.id.textView2)
-            resultTextView2.text = "No se recibio el resultado"
-        }*/
 
         val botonGuardar: Button = findViewById(R.id.botonGuardarVideoEnGaleria)
         botonGuardar.setOnClickListener {

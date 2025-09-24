@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val pollingIntervalMs = 3000L
 
     private lateinit var serverCommunicator: ServerCommunicator
-    private val serverURL = "http://192.168.1.102:5000"
+    private val serverURL = "http://141.227.129.107:5000"
 
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.O)

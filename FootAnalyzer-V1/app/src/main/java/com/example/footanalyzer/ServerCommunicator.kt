@@ -42,7 +42,7 @@ class ServerCommunicator(private val context: Context) {
             .build()
 
         val request = Request.Builder()
-            .url("$serverUrl/upload")
+            .url("$serverUrl/upload_video")
             .post(requestBody)
             .build()
 
@@ -82,7 +82,7 @@ class ServerCommunicator(private val context: Context) {
         }
 
         val request = Request.Builder()
-            .url("$serverUrl/request?process_id=$pid")
+            .url("$serverUrl/request_video?process_id=$pid")
             .get()
             .build()
 
@@ -130,7 +130,7 @@ class ServerCommunicator(private val context: Context) {
 
     fun requestResultsFromServer(serverUrl: String, callback: (String?) -> Unit) {
         val request = Request.Builder()
-            .url("$serverUrl/get_pisada?process_id=$processId")
+            .url("$serverUrl/get_results?process_id=$processId")
             .get()
             .build()
 

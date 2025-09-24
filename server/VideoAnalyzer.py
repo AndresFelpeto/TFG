@@ -131,7 +131,7 @@ def analyze_video(video_path, progress: Progress | None = None,progress_step: Pr
                 angle = calculate_angle((x_ar, y_ar), (x_kr, y_kr), lado='derecho')
                 right_angles.append(angle)
                 cv2.putText(frame, f"{angle:.1f}°", (x_ar + 10, y_ar - 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 0, 0), 2)
 
         writer.write(frame)
         frame_idx += 1
