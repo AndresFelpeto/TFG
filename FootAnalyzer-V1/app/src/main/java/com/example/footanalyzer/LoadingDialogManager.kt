@@ -35,6 +35,7 @@ object LoadingDialogManager {
         handler.post {
             if (dialogFragment?.isAdded == true) {
                 dialogFragment?.dismissAllowingStateLoss()
+                dialogFragment=null
             }
         }
     }

@@ -205,9 +205,9 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
     print(f"🎞️ Video generado con ángulos de pisada: {out_path}")
     frames_izquierda=seleccionar_frames_mas_cercanos(detected_frames,avg_left,'izquierda',n=4)
     frames_derecha=seleccionar_frames_mas_cercanos(detected_frames,avg_right,'derecha',n=4)
-    guardar_frames_zip(frames_izquierda, frames_derecha, output_dir)
+    zip_path=guardar_frames_zip(frames_izquierda, frames_derecha, output_dir)
 
 
     pose.close()
 
-    return out_path, avg_left, avg_right, output_dir
+    return out_path, avg_left, avg_right, zip_path

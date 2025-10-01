@@ -99,9 +99,7 @@ def get_pisada():
     print(f"🔓 Enviando datos de pisada para {pid}")
     return jsonify({
         "angle_left_foot": procesos[pid]["angles"]["left"],
-        "angle_right_foot": procesos[pid]["angles"]["right"],
-        "frames_left": procesos[pid]["frames"]["left"],
-        "frames_right": procesos[pid]["frames"]["right"]
+        "angle_right_foot": procesos[pid]["angles"]["right"]
     })
 
 @app.route("/get_frames_zip", methods=["GET"])

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.Toast
 import android.provider.MediaStore
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Environment
 import java.io.File
 import java.io.OutputStream
@@ -32,6 +33,8 @@ class ResultActivity : AppCompatActivity() {
         val valor_izquierda = intent.getIntExtra("angle_left_foot",0)
         val valor_derecha = intent.getIntExtra("angle_right_foot",0)
         val videoPath = intent.getStringExtra("video_path")
+        val zipPath = intent.getStringExtra("frames_zip_path")
+        var allFrames: List<File> = emptyList()
 
         val indicator_hacia_abajo = findViewById<ImageView>(R.id.marcador_hacia_abajo)
         val indicator_hacia_arriba = findViewById<ImageView>(R.id.marcador_hacia_arriba)
@@ -77,6 +80,27 @@ class ResultActivity : AppCompatActivity() {
 
             val resultTextView2: TextView = findViewById(R.id.textView2)
             resultTextView2.text = "Error al procesar segundo resultado"
+        }
+
+        if (zipPath != null) {
+            allFrames = extractFramesFromZip(zipPath)
+        }
+        findViewById<Button>(R.id.verPisadaIzquierda).setOnClickListener {
+            val leftFrames = allFrames.filter { it.name.startsWith("izquierda") }
+            val intent = Intent(this, FrameActivity::class.java).apply {
+                putStringArrayListExtra(
+                    "frames_list",
+                    ArrayList(leftFrames.map { it.absolutePath })
+                )
+            }
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.verPisadaDerecha).setOnClickListener {
+            val rightFrames = allFrames.filter { it.name.startsWith("derecha") }
+            val intent = Intent(this, FrameActivity::class.java)
+            intent.putStringArrayListExtra("frames_list", ArrayList(rightFrames.map { it.absolutePath }))
+            startActivity(intent)
         }
 
         val botonGuardar: Button = findViewById(R.id.botonGuardarVideoEnGaleria)
@@ -145,7 +169,7 @@ class ResultActivity : AppCompatActivity() {
                     val outFile = File(outputDir, entry.name)
                     zip.getInputStream(entry).use { input ->
                         outFile.outputStream().use { output ->
-                            input.copyTo(output)
+                            input.copyTo(output, bufferSize = 32 * 1024) // buffer de 32KB
                         }
                     }
                     frameFiles.add(outFile)
@@ -154,6 +178,7 @@ class ResultActivity : AppCompatActivity() {
         }
         return frameFiles
     }
+
 
 
 }
