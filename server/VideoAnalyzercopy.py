@@ -6,6 +6,7 @@ import base64
 from io import BytesIO
 from Foot_Step_Recognition import foot_step_frames
 from Progress import Progress
+import zipfile
 
 def calculate_angle(ankle, knee, lado='izquierdo'):
     vec_leg = np.array([ankle[0] - knee[0], ankle[1] - knee[1]])
@@ -45,13 +46,6 @@ def mean_data(valores, k=2):
     # Si todos fueron descartados, devolver la media original
     return np.mean(filtrados) if filtrados else media
 
-def image_to_base64(image):
-    _, buffer = cv2.imencode('.jpg', image)
-    img_bytes = buffer.tobytes()
-    return base64.b64encode(img_bytes).decode('utf-8')
-
-
-
 def seleccionar_frames_mas_cercanos(frames, target_angle, etiqueta, n=4):
     
     frames_filtrados = []
@@ -66,16 +60,27 @@ def seleccionar_frames_mas_cercanos(frames, target_angle, etiqueta, n=4):
     def diferencia_angular(frame):
         return abs(frame["angulo"] - target_angle)
 
-    frames_ordenados = sorted(frames_filtrados, key=diferencia_angular)
-    frames_base64 = []
-    for frame in frames_ordenados[:n]:
-        # Convertir la imagen a Base64
-        frame_base64 = image_to_base64(frame['imagen'])
-        frame['image_base64'] = frame_base64  # Añadir el Base64 a la metadata
-        frames_base64.append(frame)
-    
-    return frames_base64
+    return sorted(frames_filtrados, key=diferencia_angular)
 
+
+def guardar_frames_zip(frames_izquierda, frames_derecha, output_dir):
+    zip_path = os.path.join(output_dir, "frames_seleccionados.zip")
+    with zipfile.ZipFile(zip_path, 'w') as zipf:
+        for frame in frames_izquierda:
+            img_name = f"izquierda_{frame['frame_index']}.jpg"
+            img_path = os.path.join(output_dir, img_name)
+            cv2.imwrite(img_path, frame["imagen"])
+            zipf.write(img_path, img_name)
+            os.remove(img_path)
+
+        for frame in frames_derecha:
+            img_name = f"derecha_{frame['frame_index']}.jpg"
+            img_path = os.path.join(output_dir, img_name)
+            cv2.imwrite(img_path, frame["imagen"])
+            zipf.write(img_path, img_name)
+            os.remove(img_path)
+
+    return zip_path
 
 def analyze_video(video_path, progress: Progress | None = None, progress_step: Progress | None = None):
     mp_pose = mp.solutions.pose
@@ -200,9 +205,9 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
     print(f"🎞️ Video generado con ángulos de pisada: {out_path}")
     frames_izquierda=seleccionar_frames_mas_cercanos(detected_frames,avg_left,'izquierda',n=4)
     frames_derecha=seleccionar_frames_mas_cercanos(detected_frames,avg_right,'derecha',n=4)
-
+    guardar_frames_zip(frames_izquierda, frames_derecha, output_dir)
 
 
     pose.close()
 
-    return out_path, avg_left, avg_right, frames_izquierda, frames_derecha  # <<< añadido >>>
+    return out_path, avg_left, avg_right, output_dir

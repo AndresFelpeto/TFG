@@ -108,29 +108,49 @@ class MainActivity : AppCompatActivity() {
                             val videoFile = File(cacheDir, "resultado_video.mp4")
                             videoFile.writeBytes(videoBytes!!)
 
-                            // Obtener ángulos del servidor
                             serverCommunicator.requestResultsFromServer(serverURL) { result ->
-                                runOnUiThread {
-                                    if (result != null) {
-                                        val json = JSONObject(result)
-                                        val leftFoot = json.optInt("angle_left_foot", -1)
-                                        val rightFoot = json.optInt("angle_right_foot", -1)
+                                if (result != null) {
+                                    val json = JSONObject(result)
+                                    val leftFoot = json.optInt("angle_left_foot", -1)
+                                    val rightFoot = json.optInt("angle_right_foot", -1)
 
-                                        if (leftFoot != -1 && rightFoot != -1) {
-                                            val intent = Intent(this, ResultActivity::class.java)
-                                            intent.putExtra("video_path", videoFile.absolutePath)
-                                            intent.putExtra("angle_left_foot", leftFoot)
-                                            intent.putExtra("angle_right_foot", rightFoot)
-                                            startActivity(intent)
-                                        } else {
-                                            showError("No se recibieron los resultados del servidor.")
+                                    // después de obtener los ángulos, pedimos el ZIP
+                                    serverCommunicator.requestFramesZipFromServer(
+                                        serverUrl = serverURL,
+                                        onZip = { zipBytes ->
+                                            val zipFile = File(cacheDir, "frames_seleccionados.zip")
+                                            zipFile.writeBytes(zipBytes)
+                                            Log.d("App", "ZIP guardado en: ${zipFile.absolutePath}")
+
+                                            runOnUiThread {
+                                                if (leftFoot != -1 && rightFoot != -1) {
+                                                    val intent = Intent(this, ResultActivity::class.java)
+                                                    intent.putExtra("video_path", videoFile.absolutePath)
+                                                    intent.putExtra("angle_left_foot", leftFoot)
+                                                    intent.putExtra("angle_right_foot", rightFoot)
+                                                    intent.putExtra("frames_zip_path", zipFile.absolutePath) // opcional, si quieres pasarlo
+                                                    startActivity(intent)
+                                                } else {
+                                                    showError("No se recibieron los resultados del servidor.")
+                                                }
+                                                LoadingDialogManager.taskComplete()
+                                            }
+                                        },
+                                        onError = { err ->
+                                            runOnUiThread {
+                                                showError("Error al recibir ZIP: ${err?.message}")
+                                                LoadingDialogManager.taskComplete()
+                                            }
                                         }
-                                    } else {
+                                    )
+                                } else {
+                                    runOnUiThread {
                                         showError("Fallo en la conexión al recibir resultados.")
+                                        LoadingDialogManager.taskComplete()
                                     }
-                                    LoadingDialogManager.taskComplete()
                                 }
                             }
+
                         } else {
                             showError("Fallo al recibir el video del servidor.")
                             LoadingDialogManager.taskComplete()

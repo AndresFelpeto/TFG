@@ -3,10 +3,8 @@ from flask import Flask, request, jsonify, send_file
 import os
 from datetime import datetime
 import threading
-import time
-
 from Progress import Progress
-from VideoAnalyzer import analyze_video
+from VideoAnalyzercopy import analyze_video
 
 app = Flask(__name__)
 procesos = {}
@@ -17,12 +15,16 @@ def procesar_video(pid, filepath):
     try:
         step_progress = procesos[pid]["progress_step"]
         analyzer_progress = procesos[pid]["progress_analyzer"]
-        processed_video_path, angle_left_foot, angle_right_foot = analyze_video(filepath,analyzer_progress,step_progress)
+        processed_video_path, angle_left_foot, angle_right_foot, frames_left, frames_right = analyze_video(filepath,analyzer_progress,step_progress)
         procesos[pid]["status"] = "done"
         procesos[pid]["output"] = processed_video_path
         procesos[pid]["angles"] = {
             "left": angle_left_foot,
             "right": angle_right_foot
+        }
+        procesos[pid]["frames"] = {
+            "left": frames_left,
+            "right": frames_right
         }
         print(f"✅ Análisis completado para {pid}")
     except Exception as e:
@@ -40,6 +42,7 @@ def upload_video():
         "remaining": 1,
         "output": None,
         "angles": None,
+        "frames": None,
         "progress":0,
         "progress_step": progress_step,
         "progress_analyzer": progress_analyzer
@@ -99,7 +102,9 @@ def get_pisada():
     print(f"🔓 Enviando datos de pisada para {pid}")
     return jsonify({
         "angle_left_foot": procesos[pid]["angles"]["left"],
-        "angle_right_foot": procesos[pid]["angles"]["right"]
+        "angle_right_foot": procesos[pid]["angles"]["right"],
+        "frames_left": procesos[pid]["frames"]["left"],
+        "frames_right": procesos[pid]["frames"]["right"]
     })
 
 if __name__ == "__main__":

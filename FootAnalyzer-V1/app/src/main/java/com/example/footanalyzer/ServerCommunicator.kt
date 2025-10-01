@@ -148,4 +148,47 @@ class ServerCommunicator(private val context: Context) {
         })
     }
 
+    fun requestFramesZipFromServer(
+        serverUrl: String,
+        onZip: (zipBytes: ByteArray) -> Unit,
+        onError: (Throwable?) -> Unit = {}
+    ) {
+        val pid = processId
+        if (pid.isNullOrEmpty()) {
+            onError(IllegalStateException("processId nulo"))
+            return
+        }
+
+        val request = Request.Builder()
+            .url("$serverUrl/get_frames_zip?process_id=$pid")
+            .get()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("VideoSender", "Error al recibir ZIP: ${e.message}")
+                onError(e)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    val contentType = it.header("Content-Type") ?: ""
+                    if (contentType.contains("zip")) {
+                        val bodyBytes = it.body?.bytes()
+                        if (bodyBytes != null) {
+                            Log.d("VideoSender", "ZIP recibido (${bodyBytes.size} bytes)")
+                            onZip(bodyBytes)
+                        } else {
+                            onError(IOException("Body de ZIP vacío"))
+                        }
+                    } else {
+                        val body = it.body?.string()
+                        onError(IOException("Respuesta inesperada: $body"))
+                    }
+                }
+            }
+        })
+    }
+
+
 }

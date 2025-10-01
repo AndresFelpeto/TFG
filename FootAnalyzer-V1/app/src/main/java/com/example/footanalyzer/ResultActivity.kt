@@ -129,4 +129,31 @@ class ResultActivity : AppCompatActivity() {
             Toast.makeText(context, "No se pudo guardar el video", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun extractFramesFromZip(zipPath: String): List<File> {
+        val outputDir = File(cacheDir, "frames_unzip")
+        if (!outputDir.exists()) outputDir.mkdirs()
+
+        val frameFiles = mutableListOf<File>()
+        val zipFile = java.util.zip.ZipFile(zipPath)
+
+        zipFile.use { zip ->
+            val entries = zip.entries()
+            while (entries.hasMoreElements()) {
+                val entry = entries.nextElement()
+                if (!entry.isDirectory && entry.name.endsWith(".jpg")) {
+                    val outFile = File(outputDir, entry.name)
+                    zip.getInputStream(entry).use { input ->
+                        outFile.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    frameFiles.add(outFile)
+                }
+            }
+        }
+        return frameFiles
+    }
+
+
 }
