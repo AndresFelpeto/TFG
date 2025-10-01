@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 import threading
 from Progress import Progress
-from VideoAnalyzercopy import analyze_video
+from VideoAnalyzer import analyze_video
 
 app = Flask(__name__)
 procesos = {}
@@ -15,17 +15,14 @@ def procesar_video(pid, filepath):
     try:
         step_progress = procesos[pid]["progress_step"]
         analyzer_progress = procesos[pid]["progress_analyzer"]
-        processed_video_path, angle_left_foot, angle_right_foot, frames_left, frames_right = analyze_video(filepath,analyzer_progress,step_progress)
+        processed_video_path, angle_left_foot, angle_right_foot, frames_path = analyze_video(filepath,analyzer_progress,step_progress)
         procesos[pid]["status"] = "done"
         procesos[pid]["output"] = processed_video_path
         procesos[pid]["angles"] = {
             "left": angle_left_foot,
             "right": angle_right_foot
         }
-        procesos[pid]["frames"] = {
-            "left": frames_left,
-            "right": frames_right
-        }
+        procesos[pid]["frames_zip"] = frames_path
         print(f"✅ Análisis completado para {pid}")
     except Exception as e:
         procesos[pid]["status"] = "error"
@@ -42,7 +39,7 @@ def upload_video():
         "remaining": 1,
         "output": None,
         "angles": None,
-        "frames": None,
+        "frames_zip": None,
         "progress":0,
         "progress_step": progress_step,
         "progress_analyzer": progress_analyzer
@@ -102,10 +99,26 @@ def get_pisada():
     print(f"🔓 Enviando datos de pisada para {pid}")
     return jsonify({
         "angle_left_foot": procesos[pid]["angles"]["left"],
-        "angle_right_foot": procesos[pid]["angles"]["right"],
-        "frames_left": procesos[pid]["frames"]["left"],
-        "frames_right": procesos[pid]["frames"]["right"]
+        "angle_right_foot": procesos[pid]["angles"]["right"]
     })
+
+@app.route("/get_frames_zip", methods=["GET"])
+def get_frames_zip():
+    pid = request.args.get("process_id")
+    if not pid or pid not in procesos:
+        return jsonify({"status": "error", "message": "ID inválido"}), 400
+
+    info = procesos[pid]
+
+    if info["status"] != "done" or not info.get("frames_zip"):
+        return jsonify({"status": "error", "message": "Frames no disponibles aún"}), 400
+
+    zip_path = info["frames_zip"]
+    if not os.path.exists(zip_path):
+        return jsonify({"status": "error", "message": "El archivo ZIP no se encuentra"}), 500
+
+    print(f"📦 Enviando ZIP de frames: {zip_path}")
+    return send_file(zip_path, mimetype="application/zip", as_attachment=True)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

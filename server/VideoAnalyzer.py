@@ -2,8 +2,11 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
+import base64
+from io import BytesIO
 from Foot_Step_Recognition import foot_step_frames
 from Progress import Progress
+import zipfile
 
 def calculate_angle(ankle, knee, lado='izquierdo'):
     vec_leg = np.array([ankle[0] - knee[0], ankle[1] - knee[1]])
@@ -28,13 +31,6 @@ def classify_rearfoot_angle_label(angle):
 
 
 def mean_data(valores, k=2):
-    """
-    Calcula la media robusta de una lista de valores,
-    descartando aquellos que se desvían más de k*desviaciones estándar.
-    Parámetros:
-        valores: lista de ángulos
-        k: factor de tolerancia (por defecto 2σ)
-    """
     if not valores:
         return None
 
@@ -50,18 +46,56 @@ def mean_data(valores, k=2):
     # Si todos fueron descartados, devolver la media original
     return np.mean(filtrados) if filtrados else media
 
+def seleccionar_frames_mas_cercanos(frames, target_angle, etiqueta, n=4):
+    
+    frames_filtrados = []
+    
+    for frame in frames:
+        if frame["etiqueta"] == etiqueta and "angulo" in frame:
+            frames_filtrados.append(frame)
 
-def analyze_video(video_path, progress: Progress | None = None,progress_step: Progress | None = None):
+    if not frames_filtrados:
+        return []
+
+    def diferencia_angular(frame):
+        return abs(frame["angulo"] - target_angle)
+
+    return sorted(frames_filtrados, key=diferencia_angular)
+
+
+def guardar_frames_zip(frames_izquierda, frames_derecha, output_dir):
+    zip_path = os.path.join(output_dir, "frames_seleccionados.zip")
+    with zipfile.ZipFile(zip_path, 'w') as zipf:
+        for frame in frames_izquierda:
+            img_name = f"izquierda_{frame['frame_index']}.jpg"
+            img_path = os.path.join(output_dir, img_name)
+            cv2.imwrite(img_path, frame["imagen"])
+            zipf.write(img_path, img_name)
+            os.remove(img_path)
+
+        for frame in frames_derecha:
+            img_name = f"derecha_{frame['frame_index']}.jpg"
+            img_path = os.path.join(output_dir, img_name)
+            cv2.imwrite(img_path, frame["imagen"])
+            zipf.write(img_path, img_name)
+            os.remove(img_path)
+
+    return zip_path
+
+def analyze_video(video_path, progress: Progress | None = None, progress_step: Progress | None = None):
     mp_pose = mp.solutions.pose
     pose = mp_pose.Pose()
     if progress_step is None:
-        progress_step=Progress()
-    pisadas_final_d, pisadas_final_i,_ = foot_step_frames(video_path,progress_step)
+        progress_step = Progress()
+    pisadas_final_d, pisadas_final_i, _ = foot_step_frames(video_path, progress_step)
 
     cap = cv2.VideoCapture(video_path)
+    video_name = os.path.splitext(os.path.basename(video_path))[0]
+    output_dir = os.path.join("videos_resultado", video_name)
+    os.makedirs(output_dir, exist_ok=True)
+
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    os.makedirs("videos_resultado", exist_ok=True)
-    out_path = os.path.join("videos_resultado", os.path.basename(video_path))
+    out_path = os.path.join(output_dir, f"{video_name}.mp4")
 
     if progress is None:
         progress = Progress()
@@ -81,6 +115,8 @@ def analyze_video(video_path, progress: Progress | None = None,progress_step: Pr
     left_angles = []
     right_angles = []
 
+    detected_frames = []  # <<< añadido >>>
+
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -96,7 +132,6 @@ def analyze_video(video_path, progress: Progress | None = None,progress_step: Pr
             knee_left = lm[25]; ankle_left = lm[27]; heel_left = lm[29]
             knee_right = lm[26]; ankle_right = lm[28]; heel_right = lm[30]
 
-            # Coordenadas absolutas
             x_kl, y_kl = int(knee_left.x * w), int(knee_left.y * h)
             x_kr, y_kr = int(knee_right.x * w), int(knee_right.y * h)
             x_al, y_al = int(ankle_left.x * w), int(ankle_left.y * h)
@@ -104,13 +139,11 @@ def analyze_video(video_path, progress: Progress | None = None,progress_step: Pr
             x_hl, y_hl = int(heel_left.x * w), int(heel_left.y * h)
             x_hr, y_hr = int(heel_right.x * w), int(heel_right.y * h)
 
-            # Suelo dinámico
             y_positions = [y_al, y_ar, y_hl, y_hr]
             ground_level = max(y_positions) + 5
             if ground_level > ground_level_fixed:
                 ground_level_fixed = ground_level
 
-            # Dibujar líneas y puntos
             cv2.line(frame, (x_kl, y_kl), (x_al, y_al), (0, 0, 0), 2)
             cv2.line(frame, (x_kr, y_kr), (x_ar, y_ar), (0, 0, 0), 2)
             for x, y, color in [
@@ -120,29 +153,44 @@ def analyze_video(video_path, progress: Progress | None = None,progress_step: Pr
             ]:
                 cv2.circle(frame, (x, y), 6, color, -1)
 
-            # Si el frame está en las listas de pisadas
+            frame_labeled = None  # <<< añadido >>>
+
             if frame_idx in pisadas_final_i:
                 angle = calculate_angle((x_al, y_al), (x_kl, y_kl), lado='izquierdo')
                 left_angles.append(angle)
-                cv2.putText(frame, f"{angle:.1f}°", (x_al - 100, y_al - 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                cv2.putText(frame, f"{angle:.1f} grados", (x_al - 100, y_al - 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2)
+                frame_labeled = frame.copy()  # <<< añadido >>>
+                detected_frames.append({
+                    'frame_index': frame_idx,
+                    'etiqueta': 'izquierda',
+                    'imagen': frame_labeled,
+                    'angulo': angle
+                })
 
             if frame_idx in pisadas_final_d:
                 angle = calculate_angle((x_ar, y_ar), (x_kr, y_kr), lado='derecho')
                 right_angles.append(angle)
-                cv2.putText(frame, f"{angle:.1f}°", (x_ar + 10, y_ar - 30),
+                cv2.putText(frame, f"{angle:.1f} grados", (x_ar + 10, y_ar - 30),
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 0, 0), 2)
+                frame_labeled = frame.copy()  # <<< añadido >>>
+                detected_frames.append({
+                    'frame_index': frame_idx,
+                    'etiqueta': 'derecha',
+                    'imagen': frame_labeled,
+                    'angulo': angle 
+                })
 
         writer.write(frame)
         frame_idx += 1
-        progress.current = frame_idx  # <<< actualizar avance
+        progress.current = frame_idx
 
     cap.release()
     writer.release()
 
-    # Cálculo de medias y clasificación
     angle_left_foot = None
     angle_right_foot = None
+    avg_left = avg_right = None
 
     if left_angles:
         avg_left = mean_data(left_angles)
@@ -155,5 +203,11 @@ def analyze_video(video_path, progress: Progress | None = None,progress_step: Pr
         print(f"Media pie derecho: {avg_right:.2f}° - {angle_right_foot}")
 
     print(f"🎞️ Video generado con ángulos de pisada: {out_path}")
+    frames_izquierda=seleccionar_frames_mas_cercanos(detected_frames,avg_left,'izquierda',n=4)
+    frames_derecha=seleccionar_frames_mas_cercanos(detected_frames,avg_right,'derecha',n=4)
+    zip_path=guardar_frames_zip(frames_izquierda, frames_derecha, output_dir)
+
+
     pose.close()
-    return out_path, avg_left, avg_right
+
+    return out_path, avg_left, avg_right, zip_path
