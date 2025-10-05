@@ -121,4 +121,11 @@ def get_frames_zip():
     return send_file(zip_path, mimetype="application/zip", as_attachment=True)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0",
+    port=443,
+    ssl_context=(
+        "/etc/letsencrypt/live/andrestfg.es/fullchain.pem",
+        "/etc/letsencrypt/live/andrestfg.es/privkey.pem"
+    ),
+    debug=True
+)
