@@ -21,7 +21,7 @@ import android.widget.ImageView
 
 class ResultActivity : AppCompatActivity() {
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
@@ -30,8 +30,8 @@ class ResultActivity : AppCompatActivity() {
         val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in_result)
         rootView.startAnimation(fadeIn)
 
-        val valor_izquierda = intent.getIntExtra("angle_left_foot",0)
-        val valor_derecha = intent.getIntExtra("angle_right_foot",0)
+        val valor_izquierda = intent.getDoubleExtra("angle_left_foot",0.0)
+        val valor_derecha = intent.getDoubleExtra("angle_right_foot",0.0)
         val videoPath = intent.getStringExtra("video_path")
         val zipPath = intent.getStringExtra("frames_zip_path")
         var allFrames: List<File> = emptyList()
@@ -53,7 +53,8 @@ class ResultActivity : AppCompatActivity() {
                 indicator_hacia_abajo.translationX = offset_izquierda.toFloat() - (indicator_hacia_abajo.width / 2)
                 indicator_hacia_arriba.translationX = offset_derecha.toFloat() - (indicator_hacia_arriba.width / 2)
             }
-            val textView_izquierda = findViewById<TextView>(R.id.textView)
+            val textView_izquierda = findViewById<TextView>(R.id.TipoPisadaIzquierda)
+            findViewById<TextView>(R.id.ResultadoPisadaIzquierda).text=String.format("%.1f",valor_izquierda)
             if(valor_izquierda>7){
                 textView_izquierda.text = "Pronador"
             }
@@ -63,7 +64,8 @@ class ResultActivity : AppCompatActivity() {
             else{
                 textView_izquierda.text = "Neutro"
             }
-            val textView_derecha = findViewById<TextView>(R.id.textView2)
+            val textView_derecha = findViewById<TextView>(R.id.TipoPisadaDerecha)
+            findViewById<TextView>(R.id.ResultadoPisadaDerecha).text=String.format("%.1f",valor_derecha)
             if(valor_derecha>7){
                 textView_derecha.text = "Pronador"
             }
@@ -75,10 +77,10 @@ class ResultActivity : AppCompatActivity() {
             }
         } catch (e: JSONException) {
             Log.d("ResultActivity", "Error al parsear el JSON: ${e.message}")
-            val resultTextView: TextView = findViewById(R.id.textView)
+            val resultTextView: TextView = findViewById(R.id.TipoPisadaIzquierda)
             resultTextView.text = "Error al procesar primer resultado"
 
-            val resultTextView2: TextView = findViewById(R.id.textView2)
+            val resultTextView2: TextView = findViewById(R.id.TipoPisadaDerecha)
             resultTextView2.text = "Error al procesar segundo resultado"
         }
 

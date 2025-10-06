@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
@@ -21,11 +22,11 @@ class ServerCommunicator(private val context: Context) {
         .build()
 
 
-    fun sendVideoToPC(videoUri: Uri, serverUrl: String, onProcessIdReady: (Boolean) -> Unit) {
+    fun sendVideoToServer(videoUri: Uri, serverUrl: String, onProcessIdReady: (Boolean) -> Unit) {
         val inputStream: InputStream? = context.contentResolver.openInputStream(videoUri)
         if (inputStream == null) {
             Log.d("VideoSender", "No se pudo abrir el archivo")
-            onProcessIdReady(false)  // avisa error
+            onProcessIdReady(false)
             return
         }
 
@@ -37,7 +38,7 @@ class ServerCommunicator(private val context: Context) {
             .addFormDataPart(
                 "video",
                 "video.mp4",
-                RequestBody.create("video/mp4".toMediaTypeOrNull(), videoBytes)
+                videoBytes.toRequestBody("video/mp4".toMediaTypeOrNull())
             )
             .build()
 
@@ -49,7 +50,7 @@ class ServerCommunicator(private val context: Context) {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d("VideoSender", "Error al enviar el video: ${e.message}")
-                onProcessIdReady(false) // avisa error
+                onProcessIdReady(false)
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -62,14 +63,17 @@ class ServerCommunicator(private val context: Context) {
                     val jsonObject = JSONObject(it)
                     processId = jsonObject.optString("process_id", null)
                     Log.d("VideoSender", "Process ID guardado: $processId")
-                    onProcessIdReady(true) // éxito
-                } ?: onProcessIdReady(false)
+                    onProcessIdReady(true)
+                } ?: run {
+                    Log.d("VideoSender", "Error: respuesta del servidor no válida")
+                    onProcessIdReady(false)
+                }
             }
         })
     }
 
 
-    fun requestVideoFromPC(
+    fun requestVideoFromServer(
         serverUrl: String,
         onProgress: (remaining: Int) -> Unit,
         onVideo: (videoBytes: ByteArray) -> Unit,

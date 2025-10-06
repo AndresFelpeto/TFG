@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val pollingIntervalMs = 3000L
 
     private lateinit var serverCommunicator: ServerCommunicator
-    private val serverURL = "http://192.168.1.95:5000"
+    private val serverURL = "https://andrestfg.es"
 
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.O)
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 loadingDialog?.show(supportFragmentManager, "loading")
                 LoadingDialogManager.startProgress(loadingDialog!!)
 
-                serverCommunicator.sendVideoToPC(uri, serverURL) { success ->
+                serverCommunicator.sendVideoToServer(uri, serverURL) { success ->
                     if (success) {
                         startPollingRequest()
                     } else {
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         fun tick() {
             if (!polling) return
 
-            serverCommunicator.requestVideoFromPC(
+            serverCommunicator.requestVideoFromServer(
                 serverUrl = serverURL,
                 onProgress = { remaining ->
                     val progreso = 100 - remaining.coerceIn(0, 100)
@@ -107,49 +107,24 @@ class MainActivity : AppCompatActivity() {
                             Log.d("App", "Vídeo recibido con tamaño: ${videoBytes!!.size}")
                             val videoFile = File(cacheDir, "resultado_video.mp4")
                             videoFile.writeBytes(videoBytes!!)
-
-                            serverCommunicator.requestResultsFromServer(serverURL) { result ->
-                                if (result != null) {
-                                    val json = JSONObject(result)
-                                    val leftFoot = json.optInt("angle_left_foot", -1)
-                                    val rightFoot = json.optInt("angle_right_foot", -1)
-
-                                    // después de obtener los ángulos, pedimos el ZIP
-                                    serverCommunicator.requestFramesZipFromServer(
-                                        serverUrl = serverURL,
-                                        onZip = { zipBytes ->
-                                            val zipFile = File(cacheDir, "frames_seleccionados.zip")
-                                            zipFile.writeBytes(zipBytes)
-                                            Log.d("App", "ZIP guardado en: ${zipFile.absolutePath}")
-
-                                            runOnUiThread {
-                                                if (leftFoot != -1 && rightFoot != -1) {
-                                                    val intent = Intent(this, ResultActivity::class.java)
-                                                    intent.putExtra("video_path", videoFile.absolutePath)
-                                                    intent.putExtra("angle_left_foot", leftFoot)
-                                                    intent.putExtra("angle_right_foot", rightFoot)
-                                                    intent.putExtra("frames_zip_path", zipFile.absolutePath) // opcional, si quieres pasarlo
-                                                    startActivity(intent)
-                                                } else {
-                                                    showError("No se recibieron los resultados del servidor.")
-                                                }
-                                                LoadingDialogManager.taskComplete()
-                                            }
-                                        },
-                                        onError = { err ->
-                                            runOnUiThread {
-                                                showError("Error al recibir ZIP: ${err?.message}")
-                                                LoadingDialogManager.taskComplete()
-                                            }
-                                        }
-                                    )
-                                } else {
+                            requestResults() { leftFoot, rightFoot ->
+                                requestZip(){ zipFile->
                                     runOnUiThread {
-                                        showError("Fallo en la conexión al recibir resultados.")
+                                        if (leftFoot != -1.0 && rightFoot != -1.0) {
+                                            val intent = Intent(this, ResultActivity::class.java)
+                                            intent.putExtra("video_path", videoFile.absolutePath)
+                                            intent.putExtra("angle_left_foot", leftFoot)
+                                            intent.putExtra("angle_right_foot", rightFoot)
+                                            intent.putExtra("frames_zip_path", zipFile.absolutePath)
+                                            startActivity(intent)
+                                        } else {
+                                            showError("No se recibieron los resultados del servidor.")
+                                        }
                                         LoadingDialogManager.taskComplete()
                                     }
                                 }
                             }
+
 
                         } else {
                             showError("Fallo al recibir el video del servidor.")
@@ -169,9 +144,42 @@ class MainActivity : AppCompatActivity() {
 
             )
         }
-
-        // Inicia el primer ciclo de polling
         handler.post { tick() }
+    }
+
+    private fun requestResults(onSuccess: (leftFoot: Double, rightFoot: Double) -> Unit) {
+        serverCommunicator.requestResultsFromServer(serverURL) { result ->
+            if (result != null) {
+                var json = JSONObject(result)
+                val leftFoot = json.optDouble("angle_left_foot", -1.0)
+                val rightFoot = json.optDouble("angle_right_foot", -1.0)
+                onSuccess(leftFoot, rightFoot)
+            } else {
+                runOnUiThread {
+                    showError("Fallo en la conexión al recibir resultados.")
+                    LoadingDialogManager.taskComplete()
+                }
+            }
+        }
+    }
+
+
+    private fun requestZip(onSuccess: (zipFile: File) -> Unit){
+        serverCommunicator.requestFramesZipFromServer(
+            serverUrl = serverURL,
+            onZip = { zipBytes ->
+                val zipFile = File(cacheDir, "frames_seleccionados.zip")
+                zipFile.writeBytes(zipBytes)
+                Log.d("App", "ZIP guardado en: ${zipFile.absolutePath}")
+                onSuccess(zipFile)
+            },
+            onError = { err ->
+                runOnUiThread {
+                    showError("Error al recibir ZIP: ${err?.message}")
+                    LoadingDialogManager.taskComplete()
+                }
+            }
+        )
     }
 
     private fun showError(message: String) {

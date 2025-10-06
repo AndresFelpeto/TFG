@@ -39,7 +39,7 @@
         android:id="@+id/tipos_pisada"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginTop="210dp"
+        android:layout_marginTop="180dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -84,8 +84,8 @@
         android:id="@+id/pie_izquierdo"
         android:layout_width="107dp"
         android:layout_height="149dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="304dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="264dp"
         android:src="@drawable/pie_izquierdo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -94,37 +94,66 @@
         android:id="@+id/pie_derecho"
         android:layout_width="108dp"
         android:layout_height="149dp"
-        android:layout_marginStart="216dp"
-        android:layout_marginTop="304dp"
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="264dp"
         android:src="@drawable/pie_derecho"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="180dp"
-        android:layout_height="43dp"
+        android:id="@+id/TipoPisadaIzquierda"
+        android:layout_width="171dp"
+        android:layout_height="42dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="464dp"
+        android:layout_marginTop="424dp"
         android:fontFamily="@font/centurygothic"
         android:text="Supinador"
         android:textAlignment="center"
         android:textColor="#050505"
-        android:textSize="34sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="197dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="184dp"
-        android:layout_marginTop="464dp"
+        android:id="@+id/TipoPisadaDerecha"
+        android:layout_width="182dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="168dp"
+        android:layout_marginTop="424dp"
         android:fontFamily="@font/centurygothic"
         android:text="Supinador"
         android:textAlignment="center"
         android:textColor="#050505"
-        android:textSize="34sp"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ResultadoPisadaIzquierda"
+        android:layout_width="148dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="484dp"
+        android:fontFamily="@font/centurygothic"
+        android:text="5.5"
+        android:textAlignment="center"
+        android:textColor="#050505"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ResultadoPisadaDerecha"
+        android:layout_width="140dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="188dp"
+        android:layout_marginTop="484dp"
+        android:fontFamily="@font/centurygothic"
+        android:text="5.5"
+        android:textAlignment="center"
+        android:textColor="#050505"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -132,7 +161,7 @@
         android:id="@+id/botonGuardarVideoEnGaleria"
         android:layout_width="176dp"
         android:layout_height="70dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="12dp"
         android:background="@android:color/transparent"
         android:text="Guardar video en la galería"
         android:textColor="#000000"
@@ -145,7 +174,7 @@
         android:id="@+id/verPisadaIzquierda"
         android:layout_width="170dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="116dp"
+        android:layout_marginBottom="96dp"
         android:background="@android:color/transparent"
         android:text="Ver pisada izquierda"
         android:textColor="#000000"
@@ -158,7 +187,7 @@
         android:id="@+id/verPisadaDerecha"
         android:layout_width="170dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="116dp"
+        android:layout_marginBottom="96dp"
         android:background="@android:color/transparent"
         android:text="Ver pisada derecha"
         android:textColor="#000000"
@@ -171,21 +200,21 @@
         android:id="@+id/marcador_hacia_arriba"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginBottom="384dp"
         android:src="@drawable/marcador_hacia_arriba"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tipos_pisada"
         app:layout_constraintStart_toStartOf="@id/tipos_pisada"
         app:tint="#000000" />
+
 
     <ImageView
         android:id="@+id/marcador_hacia_abajo"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginBottom="468dp"
         android:src="@drawable/marcador_hacia_abajo"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tipos_pisada"
         app:layout_constraintStart_toStartOf="@id/tipos_pisada"
         app:tint="#000000" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
