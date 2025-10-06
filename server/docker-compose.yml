@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    container_name: run_alyze_app
+    ports:
+      - "5000:5000"  # Aquí asumimos que tu app está corriendo en el puerto 5000
+    networks:
+      - app_network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - /etc/letsencrypt:/etc/letsencrypt  # Asegúrate de montar los certificados
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - app_network
+    depends_on:
+      - app
+
+networks:
+  app_network:
+    driver: bridge
