@@ -23,11 +23,11 @@ def procesar_video(pid, filepath):
             "right": angle_right_foot
         }
         procesos[pid]["frames_zip"] = frames_path
-        print(f"✅ Análisis completado para {pid}")
+        print(f"Análisis completado para {pid}")
     except Exception as e:
         procesos[pid]["status"] = "error"
         procesos[pid]["error"] = "Error procesando el video"
-        print(f"❌ Error procesando {pid}: {e}")
+        print(f"Error procesando {pid}: {e}")
 
 @app.route("/upload_video", methods=["POST"])
 def upload_video():
@@ -36,11 +36,10 @@ def upload_video():
     progress_analyzer = Progress()
     procesos[pid] = {
         "status": "processing",
-        "remaining": 1,
+        "percent_completed": 1,
         "output": None,
         "angles": None,
         "frames_zip": None,
-        "progress":0,
         "progress_step": progress_step,
         "progress_analyzer": progress_analyzer
     }
@@ -70,17 +69,16 @@ def send_video():
     if not pid or pid not in procesos:
         return jsonify({"status": "error", "message": "ID inválido"}), 400
 
-    info = procesos[pid]
+    procesos[pid]
     
-    if info["status"] == "error":
-        return jsonify({"status": "error", "message": info.get("error", "Fallo desconocido")}), 500
+    if procesos["status"] == "error":
+        return jsonify({"status": "error", "message": procesos.get("error", "Fallo desconocido")}), 500
 
-    if info["status"] != "done" or not info.get("output"):
-        # No bloquear; el cliente debe consultar /status y solo llamar aquí cuando esté done
-        remaining_percent = (info["progress_analyzer"].remaining_percent() + info["progress_step"].remaining_percent()) / 2
-        return jsonify({"status": "processing", "remaining": int(remaining_percent)}), 200
+    if procesos["status"] != "done" or not procesos.get("output"):
+        percent_completed = (procesos["progress_analyzer"].percent_completed() + procesos["progress_step"].percent_completed()) / 2
+        return jsonify({"status": "processing", "remaining": int(percent_completed)}), 200
 
-    processed_video_path = info["output"]
+    processed_video_path = procesos["output"]
     if not os.path.exists(processed_video_path):
         return jsonify({"status": "error", "message": "El video procesado no se encuentra"}), 500
 
