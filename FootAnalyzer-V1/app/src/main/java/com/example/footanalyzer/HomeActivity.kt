@@ -16,7 +16,7 @@ import androidx.fragment.app.DialogFragment
 import org.json.JSONObject
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
 
     private lateinit var videoExtractor: VideoExtractor
     private var loadingDialog: LoadingDialogFragment? = null
