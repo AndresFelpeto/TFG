@@ -92,7 +92,7 @@ class ServerCommunicator(private val context: Context) {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.d("VideoSender", "Error al solicitar el video: ${e.message}")
+                Log.d("VideoSender", "Error al solicitar el video al servidor")
                 onError(e)
             }
 
@@ -140,7 +140,7 @@ class ServerCommunicator(private val context: Context) {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.d("VideoSender", "Error al recibir los resultados: ${e.message}")
+                Log.d("VideoSender", "Error al recibir los resultados del servidor")
                 callback(null)
             }
 
@@ -170,7 +170,7 @@ class ServerCommunicator(private val context: Context) {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.d("VideoSender", "Error al recibir ZIP: ${e.message}")
+                Log.d("VideoSender", "Error al recibir ZIP del servidor")
                 onError(e)
             }
 
