@@ -2,6 +2,8 @@ package com.example.footanalyzer
 
 import android.os.Handler
 import android.os.Looper
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 
 object LoadingDialogManager {
 
@@ -29,6 +31,19 @@ object LoadingDialogManager {
         }
     }
 
+    fun show(fragmentManager: FragmentManager) {
+        dialogFragment?.dismissAllowingStateLoss()
+        dialogFragment = LoadingDialogFragment()
+
+        fragmentManager.findFragmentByTag("loading")?.let {
+            (it as? DialogFragment)?.dismissAllowingStateLoss()
+        }
+
+        dialogFragment?.show(fragmentManager, "loading")
+        startProgress(dialogFragment!!)
+    }
+
+
     fun taskComplete() {
         isTaskComplete = true
         updateProgress(100)
@@ -39,4 +54,17 @@ object LoadingDialogManager {
             }
         }
     }
+
+    fun setUploadingText() {
+        handler.post {
+            dialogFragment?.updateProgressText("Subiendo video (1/2)")
+        }
+    }
+
+    fun setAnalyzingText() {
+        handler.post {
+            dialogFragment?.updateProgressText("Analizando (2/2)")
+        }
+    }
+
 }

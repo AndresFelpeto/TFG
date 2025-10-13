@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -49,6 +50,12 @@ class HomeActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.botonSeleccionarVideo).setOnClickListener {
             runAlyzerController.launchVideoPicker()
         }
+
+        findViewById<Button>(R.id.boton_info).setOnClickListener {
+            val intent = Intent(this, ExplainingActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     override fun onDestroy() {

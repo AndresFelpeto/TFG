@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
+import android.widget.TextView
 
 class LoadingDialogFragment : DialogFragment() {
 
     private var progressBar: ProgressBar? = null
+    private var progressTextView: TextView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -17,6 +19,7 @@ class LoadingDialogFragment : DialogFragment() {
         val view = inflater.inflate(R.layout.dialog_loading, container, false)
         isCancelable = false
         progressBar = view.findViewById(R.id.progressBar)
+        progressTextView = view.findViewById(R.id.progressText)
         return view
     }
     override fun onStart() {
@@ -28,6 +31,10 @@ class LoadingDialogFragment : DialogFragment() {
 
     fun updateProgress(value: Int) {
         progressBar?.progress = value
+    }
+
+    fun updateProgressText(text: String) {
+        progressTextView?.text = text
     }
 
 

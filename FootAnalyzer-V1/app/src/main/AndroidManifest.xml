@@ -24,6 +24,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ExplainingActivity">
+
+        </activity>
+
         <activity android:name=".LoadingDialogFragment"
             tools:ignore="Instantiatable">
 

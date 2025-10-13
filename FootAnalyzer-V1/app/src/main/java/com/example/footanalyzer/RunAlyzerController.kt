@@ -29,7 +29,6 @@ class RunAlyzerController(
     private val handler = Handler(Looper.getMainLooper())
     private val pollingIntervalMs = 3000L
     private var polling = false
-    private var loadingDialog: LoadingDialogFragment? = null
 
     private var videoPath: String?=null
     private var angles: Pair<Double, Double>?=null
@@ -60,10 +59,11 @@ class RunAlyzerController(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startAnalysis(uri: Uri) {
-        showLoading()
-
+        LoadingDialogManager.show(fragmentManager)
+        LoadingDialogManager.setUploadingText()
         serverCommunicator.sendVideoToServer(uri, serverUrl) { success ->
             if (success) {
+                LoadingDialogManager.setAnalyzingText()
                 startPolling()
             } else {
                 stopLoading()
@@ -147,16 +147,6 @@ class RunAlyzerController(
             stopLoading()
             onSuccess(video, a, zip)
         }
-    }
-
-    private fun showLoading() {
-        loadingDialog?.dismissAllowingStateLoss()
-        loadingDialog = LoadingDialogFragment()
-        fragmentManager.findFragmentByTag("loading")?.let {
-            (it as? DialogFragment)?.dismissAllowingStateLoss()
-        }
-        loadingDialog?.show(fragmentManager, "loading")
-        LoadingDialogManager.startProgress(loadingDialog!!)
     }
 
     private fun stopLoading() {
