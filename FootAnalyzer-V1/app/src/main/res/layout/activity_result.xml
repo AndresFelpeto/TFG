@@ -170,6 +170,20 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+            android:id="@+id/mensajeGuardado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video guardado en la galería"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/botonGuardarVideoEnGaleria"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="12dp"/>
+
+
     <Button
         android:id="@+id/verPisadaIzquierda"
         android:layout_width="170dp"
@@ -196,24 +210,25 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/marcador_hacia_arriba"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/marcador_hacia_arriba"
-        app:layout_constraintTop_toBottomOf="@id/tipos_pisada"
-        app:layout_constraintStart_toStartOf="@id/tipos_pisada"
-        app:tint="#000000" />
-
 
     <ImageView
-        android:id="@+id/marcador_hacia_abajo"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/marcador_hacia_abajo"
-        app:layout_constraintBottom_toTopOf="@id/tipos_pisada"
-        app:layout_constraintStart_toStartOf="@id/tipos_pisada"
-        app:tint="#000000" />
+            android:id="@+id/marcador_hacia_arriba"
+            android:layout_width="15dp"
+            android:layout_height="30dp"
+            android:src="@drawable/marcador_hacia_arriba"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toBottomOf="@id/tipos_pisada"
+            app:layout_constraintStart_toStartOf="@id/tipos_pisada"
+            android:layout_marginStart="4dp" />
+
+    <ImageView
+            android:id="@+id/marcador_hacia_abajo"
+            android:layout_width="21dp"
+            android:layout_height="32dp"
+            android:src="@drawable/marcador_hacia_abajo"
+            app:layout_constraintBottom_toTopOf="@id/tipos_pisada"
+            app:layout_constraintStart_toStartOf="@id/tipos_pisada"
+            app:tint="#000000" />
 
 
 

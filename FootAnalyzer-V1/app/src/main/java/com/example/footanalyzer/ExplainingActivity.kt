@@ -8,36 +8,37 @@ import androidx.viewpager2.widget.ViewPager2
 class ExplainingActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
-    private lateinit var adapter: TextPagerAdapter
+    private lateinit var adapter: ExplainingAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_explaining)
 
         val pages = listOf(
-            "Existen 3 tipos de pisada en los corredores",
+            ExplainingContent("Existen 3 tipos de pisada en los corredores",null),
 
-            "<b>Pisada Pronadora</b><br>El pie tiende a inclinarse hacia adentro durante el apoyo.<br>Es común, pero un exceso de pronación puede causar lesiones si no se corrige con calzado adecuado.",
+            ExplainingContent("<b>Pisada Pronadora</b><br>El pie rota hacia dentro en el momento de la pisada.<br>Es común, pero un exceso de pronación puede causar lesiones si no se corrige con calzado adecuado.",R.drawable.pisada_pronada),
 
-            "<b>Pisada Neutra</b><br>El pie impacta de forma equilibrada, apoyando de manera uniforme.<br>Es el tipo de pisada más eficiente y menos propenso a causar lesiones.",
+            ExplainingContent("<b>Pisada Neutra</b><br>El pie impacta de forma equilibrada, apoyando de manera uniforme.<br>Es menos probable sufrir lesiones, debido que los pesos se distribuyen de forma equilibrada por todo el pie",R.drawable.pisada_neutra),
 
-            "<b>Pisada Supinadora</b><br>El pie se inclina hacia afuera al apoyar.<br>Es menos común, y puede estar asociada a rigidez en el pie y sobrecarga en zonas externas.",
-            "Para analizar un video tendrás que seguir los siguientes pasos",
+            ExplainingContent("<b>Pisada Supinadora</b><br>El pie se inclina hacia afuera al apoyar.<br>Es menos común, y puede estar asociada a rigidez en el pie y sobrecarga en zonas externas.",R.drawable.pisada_supina),
 
-            "Seleccionar un video de tu galería donde se vea tu pisada claramente.",
+            ExplainingContent("Para analizar un video tendrás que seguir los siguientes pasos",null),
 
-            "El video debe durar entre 10 y 30 segundos",
+            ExplainingContent("<b>1</b><br>Seleccionar un video de tu galería donde se vea tu pisada claramente.",R.drawable.menu_inicio),
 
-            "El video será enviado al servidor para ser analizado",
+            ExplainingContent("<b>2</b><br>El video debe durar entre 10 y 30 segundos",R.drawable.duracion_video),
 
-            "Luego de que termine la carga, podrás ver los resultados del análisis",
+            ExplainingContent("<b>3</b><br>El video será enviado al servidor para ser analizado",R.drawable.analisis),
 
-            "Además, es posible ver imagenes de la pisada y guardar el video generado en tu galería"
+            ExplainingContent("<b>4</b><br>Luego de que termine la carga, podrás ver los resultados del análisis", R.drawable.resultados),
+
+            ExplainingContent("Además, es posible ver imagenes de la pisada y guardar el video generado en tu galería",R.drawable.resultados2)
         )
 
 
         viewPager = findViewById(R.id.viewPager)
-        adapter = TextPagerAdapter(pages)
+        adapter = ExplainingAdapter(pages)
         viewPager.adapter = adapter
 
         findViewById<Button>(R.id.boton_izquierda).setOnClickListener {

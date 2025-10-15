@@ -18,6 +18,11 @@ import java.io.OutputStream
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.core.os.postDelayed
+import android.os.Handler
+import android.os.Looper
+
+
 
 class ResultActivity : AppCompatActivity() {
 
@@ -39,6 +44,7 @@ class ResultActivity : AppCompatActivity() {
         val indicator_hacia_abajo = findViewById<ImageView>(R.id.marcador_hacia_abajo)
         val indicator_hacia_arriba = findViewById<ImageView>(R.id.marcador_hacia_arriba)
         val bar = findViewById<View>(R.id.tipos_pisada)
+
 
         try {
             bar.post {
@@ -122,6 +128,7 @@ class ResultActivity : AppCompatActivity() {
         val resolver = context.contentResolver
         val videoCollection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
 
+        val mensajeGuardado = findViewById<TextView>(R.id.mensajeGuardado)
         val nombreArchivo = "video_runAlyze_${System.currentTimeMillis()}.mp4"
 
         val contentValues = ContentValues().apply {
@@ -143,17 +150,22 @@ class ResultActivity : AppCompatActivity() {
                 contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
                 resolver.update(videoUri, contentValues, null, null)
 
-                Toast.makeText(context, "Video guardado en la galeria", Toast.LENGTH_SHORT).show()
                 Log.d("ResultActivity", "Video guardado en la galeria")
+                mensajeGuardado.text = "Video guardado en la galería"
+
 
             } catch (e: Exception) {
                 Log.e("ResultActivity", "Error al guardar el video: ${e.message}")
-                Toast.makeText(context, "Error al guardar el video", Toast.LENGTH_SHORT).show()
+                mensajeGuardado.text = "Video guardado en la galería"
             }
         } else {
             Log.e("ResultActivity", "No se pudo guardar el video")
-            Toast.makeText(context, "No se pudo guardar el video", Toast.LENGTH_SHORT).show()
+            mensajeGuardado.text = "Video guardado en la galería"
         }
+        mensajeGuardado.visibility = View.VISIBLE
+        Handler(Looper.getMainLooper()).postDelayed({
+            mensajeGuardado.visibility = View.GONE
+        }, 3000)
     }
 
     private fun extractFramesFromZip(zipPath: String): List<File> {

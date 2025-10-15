@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 
@@ -15,6 +16,8 @@ class FrameActivity : AppCompatActivity() {
 
     private var framesList: ArrayList<String> = arrayListOf()
     private var currentIndex = 0
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,13 @@ class FrameActivity : AppCompatActivity() {
         if (imgFile.exists()) {
             val bitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
             imageView.setImageBitmap(bitmap)
+
+            // Solo si realmente necesitas limitar el tamaño, puedes forzarlo así (opcional)
+            imageView.layoutParams.width = (resources.displayMetrics.widthPixels * 0.8).toInt()
+            imageView.layoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT
+            imageView.requestLayout()
         }
     }
+
+
 }
