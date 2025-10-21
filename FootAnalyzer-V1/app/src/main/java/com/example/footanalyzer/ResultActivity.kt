@@ -60,7 +60,6 @@ class ResultActivity : AppCompatActivity() {
                 indicator_hacia_arriba.translationX = offset_derecha.toFloat() - (indicator_hacia_arriba.width / 2)
             }
             val textView_izquierda = findViewById<TextView>(R.id.TipoPisadaIzquierda)
-            findViewById<TextView>(R.id.ResultadoPisadaIzquierda).text=String.format("%.1f",valor_izquierda)
             if(valor_izquierda>7){
                 textView_izquierda.text = "Pronador"
             }
@@ -71,7 +70,6 @@ class ResultActivity : AppCompatActivity() {
                 textView_izquierda.text = "Neutro"
             }
             val textView_derecha = findViewById<TextView>(R.id.TipoPisadaDerecha)
-            findViewById<TextView>(R.id.ResultadoPisadaDerecha).text=String.format("%.1f",valor_derecha)
             if(valor_derecha>7){
                 textView_derecha.text = "Pronador"
             }

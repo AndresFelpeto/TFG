@@ -129,34 +129,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/ResultadoPisadaIzquierda"
-        android:layout_width="148dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="484dp"
-        android:fontFamily="@font/centurygothic"
-        android:text="5.5"
-        android:textAlignment="center"
-        android:textColor="#050505"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/ResultadoPisadaDerecha"
-        android:layout_width="140dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="188dp"
-        android:layout_marginTop="484dp"
-        android:fontFamily="@font/centurygothic"
-        android:text="5.5"
-        android:textAlignment="center"
-        android:textColor="#050505"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/botonGuardarVideoEnGaleria"
         android:layout_width="176dp"

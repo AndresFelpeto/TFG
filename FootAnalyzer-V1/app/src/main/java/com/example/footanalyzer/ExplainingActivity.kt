@@ -25,13 +25,15 @@ class ExplainingActivity : AppCompatActivity() {
 
             ExplainingContent("Para analizar un video tendrás que seguir los siguientes pasos",null),
 
-            ExplainingContent("<b>1</b><br>Seleccionar un video de tu galería donde se vea tu pisada claramente.",R.drawable.menu_inicio),
+            ExplainingContent("<b>1</b><br>Grabar un video corriendo en la cinta a una velocidad entre 8 y 10 km/h.<br> Debe ser grabado desde atrás, viendose el cuerpo completo, como se ve en la imagen.", null,R.raw.video_explaining),
 
             ExplainingContent("<b>2</b><br>El video debe durar entre 10 y 30 segundos",R.drawable.duracion_video),
 
-            ExplainingContent("<b>3</b><br>El video será enviado al servidor para ser analizado",R.drawable.analisis),
+            ExplainingContent("<b>3</b><br>Seleccionar el video desde tu galería presionando el símbolo &quot;+&quot;.", R.drawable.menu_inicio),
 
-            ExplainingContent("<b>4</b><br>Luego de que termine la carga, podrás ver los resultados del análisis", R.drawable.resultados),
+            ExplainingContent("<b>4</b><br>El video será enviado al servidor para ser analizado",R.drawable.analisis),
+
+            ExplainingContent("<b>5</b><br>Luego de que termine la carga, podrás ver los resultados del análisis", R.drawable.resultados),
 
             ExplainingContent("Además, es posible ver imagenes de la pisada y guardar el video generado en tu galería",R.drawable.resultados2)
         )

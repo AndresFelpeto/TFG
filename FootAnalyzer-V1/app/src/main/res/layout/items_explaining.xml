@@ -31,4 +31,16 @@
             app:layout_constraintTop_toBottomOf="@id/text_explaining"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+    <VideoView
+            android:id="@+id/video_explaining"
+            android:layout_width="295dp"
+            android:layout_height="350dp"
+            android:layout_marginTop="24dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintTop_toBottomOf="@id/text_explaining"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
