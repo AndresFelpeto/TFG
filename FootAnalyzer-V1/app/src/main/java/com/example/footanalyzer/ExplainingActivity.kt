@@ -25,7 +25,7 @@ class ExplainingActivity : AppCompatActivity() {
 
             ExplainingContent("Para analizar un video tendrás que seguir los siguientes pasos",null),
 
-            ExplainingContent("<b>1</b><br>Grabar un video corriendo en la cinta a una velocidad entre 8 y 10 km/h.<br> Debe ser grabado desde atrás, viendose el cuerpo completo, como se ve en la imagen.", null,R.raw.video_explaining),
+            ExplainingContent("<b>1</b><br>Grabar un video corriendo en la cinta a una velocidad entre 8 y 10 km/h.<br> Debe ser grabado desde atrás, con el movil desde el suelo. El suelo debe estar recto en el eje &quot;x&quot; y el cuerpo tiene que verse completo, como se ve en el video.", null,R.raw.video_explaining),
 
             ExplainingContent("<b>2</b><br>El video debe durar entre 10 y 30 segundos",R.drawable.duracion_video),
 
