@@ -2,7 +2,6 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
-import base64
 from io import BytesIO
 from Foot_Step_Recognition import foot_step_frames
 from Progress import Progress
@@ -158,8 +157,6 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
             if frame_idx in pisadas_final_i:
                 angle = calculate_angle((x_al, y_al), (x_kl, y_kl), lado='izquierdo')
                 left_angles.append(angle)
-                cv2.putText(frame, f"{angle:.1f} grados", (x_al - 100, y_al - 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2)
                 frame_labeled = frame.copy()  # <<< añadido >>>
                 detected_frames.append({
                     'frame_index': frame_idx,
@@ -171,8 +168,6 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
             if frame_idx in pisadas_final_d:
                 angle = calculate_angle((x_ar, y_ar), (x_kr, y_kr), lado='derecho')
                 right_angles.append(angle)
-                cv2.putText(frame, f"{angle:.1f} grados", (x_ar + 10, y_ar - 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 0, 0), 2)
                 frame_labeled = frame.copy()  # <<< añadido >>>
                 detected_frames.append({
                     'frame_index': frame_idx,
