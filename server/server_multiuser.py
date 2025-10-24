@@ -26,7 +26,6 @@ def procesar_video(pid, filepath):
         print(f"Análisis completado para {pid}")
     except Exception as e:
         procesos[pid]["status"] = "error"
-        procesos[pid]["error"] = "Error procesando el video"
         print(f"Error procesando {pid}: {e}")
 
 @app.route("/upload_video", methods=["POST"])
@@ -69,16 +68,15 @@ def send_video():
     if not pid or pid not in procesos:
         return jsonify({"status": "error", "message": "ID inválido"}), 400
 
-    procesos[pid]
     
-    if procesos["status"] == "error":
-        return jsonify({"status": "error", "message": procesos.get("error", "Fallo desconocido")}), 500
+    if procesos[pid]["status"] == "error":
+        return jsonify({"status": "error", "message": "Fallo desconocido"}), 500
 
-    if procesos["status"] != "done" or not procesos.get("output"):
-        percent_completed = (procesos["progress_analyzer"].percent_completed() + procesos["progress_step"].percent_completed()) / 2
+    if procesos[pid]["status"] != "done" or not procesos[pid].get("output"):
+        percent_completed = (procesos[pid]["progress_analyzer"].percent_completed() + procesos[pid]["progress_step"].percent_completed()) / 2
         return jsonify({"status": "processing", "remaining": int(percent_completed)}), 200
 
-    processed_video_path = procesos["output"]
+    processed_video_path = procesos[pid]["output"]
     if not os.path.exists(processed_video_path):
         return jsonify({"status": "error", "message": "El video procesado no se encuentra"}), 500
 

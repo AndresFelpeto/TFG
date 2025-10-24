@@ -23,8 +23,8 @@ class RunAlyzerController(
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private lateinit var videoExtractor: VideoExtractor
     private lateinit var serverCommunicator: ServerCommunicator
-
-    private val serverUrl = "https://andrestfg.es"
+    private val serverUrl = "http://192.168.1.69:443"
+    //private val serverUrl = "https://andrestfg.es"
     private val handler = Handler(Looper.getMainLooper())
     private val pollingIntervalMs = 3000L
     private var polling = false
