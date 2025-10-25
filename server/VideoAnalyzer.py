@@ -7,6 +7,7 @@ from Progress import Progress
 import zipfile
 import csv
 import time
+import logging
 
 def calculate_angle(ankle, knee, lado='izquierdo'):
     vec_leg = np.array([ankle[0] - knee[0], ankle[1] - knee[1]])
@@ -217,6 +218,6 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
     csv_file.close()
     end_time = time.time()  # Marca el tiempo de fin
     elapsed_time = end_time - start_time  # Tiempo total en segundos
-    print(f"Tiempo de analyze_video: {elapsed_time:.2f} segundos")
+    logging.debug(f"Tiempo de analyze_video: {elapsed_time:.2f} segundos")
 
     return out_path, avg_left, avg_right, zip_path
