@@ -6,6 +6,7 @@ import logging
 
 
 def foot_step_frames(video_path, progress: Progress | None = None):
+    logging.basicConfig(level=logging.DEBUG)
     mp_pose = mp.solutions.pose
     pose = mp_pose.Pose(static_image_mode=False)
 

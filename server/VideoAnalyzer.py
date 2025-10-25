@@ -126,6 +126,7 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
     detected_frames = []  # <<< añadido >>>
 
     while cap.isOpened():
+        logging.basicConfig(level=logging.DEBUG)
         ret, frame = cap.read()
         if not ret:
             break
