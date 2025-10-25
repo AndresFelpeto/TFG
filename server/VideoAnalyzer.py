@@ -219,6 +219,6 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
     csv_file.close()
     end_time = time.time()  # Marca el tiempo de fin
     elapsed_time = end_time - start_time  # Tiempo total en segundos
-    logging.debug(f"Tiempo de analyze_video: {elapsed_time:.2f} segundos")
+    logging.debug(f"Tiempo de analyze_video: {elapsed_time:.5f} segundos")
 
     return out_path, avg_left, avg_right, zip_path

@@ -131,7 +131,7 @@ def foot_step_frames(video_path, progress: Progress | None = None):
     progress.current = progress.total
     end_time = time.time()  # Marca el tiempo de fin
     elapsed_time = end_time - start_time  # Tiempo total en segundos
-    logging.debug(f"Tiempo de analyze_video: {elapsed_time:.2f} segundos")
+    logging.debug(f"Tiempo de analyze_video: {elapsed_time:.5f} segundos")
 
 
     return pisadas_final_d, pisadas_final_i, progress
