@@ -2,7 +2,7 @@ from VideoAnalyzer import analyze_video  # Asegúrate de que este módulo esté 
 import os
 
 def main():
-    nombre_video = "Video_27.mp4"  # Cambia esto al nombre real
+    nombre_video = "Video_prueba.mp4"  # Cambia esto al nombre real
     ruta_video = os.path.join("videos_recibidos", nombre_video)
 
     if not os.path.exists(ruta_video):

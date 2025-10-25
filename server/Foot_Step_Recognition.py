@@ -44,10 +44,15 @@ def foot_step_frames(video_path, progress: Progress | None = None):
     altura_heel_d_por_frame = {}
     altura_heel_i_por_frame = {}
 
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
     while True:
         ret, frame = cap.read()
         if not ret:
             break
+        if frame_idx < fps * 2:
+            frame_idx += 1
+            continue
 
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = pose.process(frame_rgb)

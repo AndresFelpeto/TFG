@@ -2,10 +2,10 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
-from io import BytesIO
 from Foot_Step_Recognition import foot_step_frames
 from Progress import Progress
 import zipfile
+import csv
 
 def calculate_angle(ankle, knee, lado='izquierdo'):
     vec_leg = np.array([ankle[0] - knee[0], ankle[1] - knee[1]])
@@ -92,6 +92,12 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
     video_name = os.path.splitext(os.path.basename(video_path))[0]
     output_dir = os.path.join("videos_resultado", video_name)
     os.makedirs(output_dir, exist_ok=True)
+    csv_path = os.path.join(output_dir, "angulos_pisada.csv")
+    csv_file = open(csv_path, mode='w', newline='')
+    csv_writer = csv.writer(csv_file)
+    csv_writer.writerow(["frame_index", "lado", "angulo"])
+
+    os.makedirs(output_dir, exist_ok=True)
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out_path = os.path.join(output_dir, f"{video_name}.mp4")
@@ -164,6 +170,7 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
                     'imagen': frame_labeled,
                     'angulo': angle
                 })
+                csv_writer.writerow([frame_idx, 'izquierda', angle])
 
             if frame_idx in pisadas_final_d:
                 angle = calculate_angle((x_ar, y_ar), (x_kr, y_kr), lado='derecho')
@@ -175,6 +182,7 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
                     'imagen': frame_labeled,
                     'angulo': angle 
                 })
+                csv_writer.writerow([frame_idx, 'derecha', angle]) 
 
         writer.write(frame)
         frame_idx += 1
@@ -204,5 +212,5 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
 
 
     pose.close()
-
+    csv_file.close()
     return out_path, avg_left, avg_right, zip_path

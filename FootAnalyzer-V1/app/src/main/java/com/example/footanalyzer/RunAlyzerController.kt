@@ -32,6 +32,9 @@ class RunAlyzerController(
     private var angles: Pair<Double, Double>?=null
     private var zipPath: String?=null
 
+    private var startTime: Long = 0 // Para medir el tiempo de procesamiento total
+    private var endTime: Long = 0
+
     init {
         serverCommunicator = ServerCommunicator(context)
     }
@@ -59,6 +62,7 @@ class RunAlyzerController(
     private fun startAnalysis(uri: Uri) {
         LoadingDialogManager.show(fragmentManager)
         LoadingDialogManager.setUploadingText()
+        startTime = System.currentTimeMillis()
         serverCommunicator.sendVideoToServer(uri, serverUrl) { success ->
             if (success) {
                 LoadingDialogManager.setAnalyzingText()
@@ -108,6 +112,9 @@ class RunAlyzerController(
                 val rightFoot = json.optDouble("angle_right_foot", -1.0)
                 if (leftFoot != -1.0 && rightFoot != -1.0) {
                     angles= Pair(leftFoot,rightFoot)
+                    endTime = System.currentTimeMillis()
+                    val timeTaken = endTime - startTime
+                    Log.d("Client", "Tiempo de procesamiento: $timeTaken ms")
                     tryFinishAnalysis()
                 } else {
                     stopLoading()
