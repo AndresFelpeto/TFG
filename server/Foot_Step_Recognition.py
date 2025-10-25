@@ -7,6 +7,7 @@ import logging
 
 def foot_step_frames(video_path, progress: Progress | None = None):
     logging.basicConfig(level=logging.DEBUG)
+    start_time = time.time()  # Marca el tiempo de inicio
     mp_pose = mp.solutions.pose
     pose = mp_pose.Pose(static_image_mode=False)
 
@@ -50,7 +51,6 @@ def foot_step_frames(video_path, progress: Progress | None = None):
     fps = cap.get(cv2.CAP_PROP_FPS)
 
     while True:
-        start_time = time.time()  # Marca el tiempo de inicio
         ret, frame = cap.read()
         if not ret:
             break
@@ -131,6 +131,7 @@ def foot_step_frames(video_path, progress: Progress | None = None):
     progress.current = progress.total
     end_time = time.time()  # Marca el tiempo de fin
     elapsed_time = end_time - start_time  # Tiempo total en segundos
-    logging.debug(f"Tiempo de step_recognition: {elapsed_time:.2f} segundos")
+    logging.debug(f"Tiempo de analyze_video: {elapsed_time:.2f} segundos")
+
 
     return pisadas_final_d, pisadas_final_i, progress
