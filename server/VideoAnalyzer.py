@@ -6,6 +6,7 @@ from Foot_Step_Recognition import foot_step_frames
 from Progress import Progress
 import zipfile
 import csv
+import time
 
 def calculate_angle(ankle, knee, lado='izquierdo'):
     vec_leg = np.array([ankle[0] - knee[0], ankle[1] - knee[1]])
@@ -82,6 +83,7 @@ def guardar_frames_zip(frames_izquierda, frames_derecha, output_dir):
     return zip_path
 
 def analyze_video(video_path, progress: Progress | None = None, progress_step: Progress | None = None):
+    start_time = time.time()  # Marca el tiempo de inicio
     mp_pose = mp.solutions.pose
     pose = mp_pose.Pose()
     if progress_step is None:
@@ -213,4 +215,8 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
 
     pose.close()
     csv_file.close()
+    end_time = time.time()  # Marca el tiempo de fin
+    elapsed_time = end_time - start_time  # Tiempo total en segundos
+    print(f"Tiempo de analyze_video: {elapsed_time:.2f} segundos")
+
     return out_path, avg_left, avg_right, zip_path

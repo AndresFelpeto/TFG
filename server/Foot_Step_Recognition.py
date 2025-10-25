@@ -1,6 +1,8 @@
 import cv2
 import mediapipe as mp
 from Progress import Progress
+import time
+
 
 
 def foot_step_frames(video_path, progress: Progress | None = None):
@@ -47,6 +49,7 @@ def foot_step_frames(video_path, progress: Progress | None = None):
     fps = cap.get(cv2.CAP_PROP_FPS)
 
     while True:
+        start_time = time.time()  # Marca el tiempo de inicio
         ret, frame = cap.read()
         if not ret:
             break
@@ -125,4 +128,8 @@ def foot_step_frames(video_path, progress: Progress | None = None):
 
     progress.done = True
     progress.current = progress.total
+    end_time = time.time()  # Marca el tiempo de fin
+    elapsed_time = end_time - start_time  # Tiempo total en segundos
+    print(f"Tiempo de step_recognition: {elapsed_time:.2f} segundos")
+
     return pisadas_final_d, pisadas_final_i, progress
