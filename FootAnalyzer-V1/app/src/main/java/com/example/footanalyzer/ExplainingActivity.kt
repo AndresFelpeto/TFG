@@ -33,9 +33,9 @@ class ExplainingActivity : AppCompatActivity() {
 
             ExplainingContent("<b>4</b><br>El video será enviado al servidor para ser analizado",R.drawable.analisis),
 
-            ExplainingContent("<b>5</b><br>Luego de que termine la carga, podrás ver los resultados del análisis", R.drawable.resultados),
+            ExplainingContent("<b>5</b><br>Luego de que termine la carga, podrás ver los resultados del análisis", R.drawable.result_activity),
 
-            ExplainingContent("Además, es posible ver imagenes de la pisada y guardar el video generado en tu galería",R.drawable.resultados2)
+            ExplainingContent("Además, es posible ver imagenes de la pisada y guardar el video generado en tu galería",R.drawable.result_activity_2)
         )
 
 
