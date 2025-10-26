@@ -1,6 +1,7 @@
 package com.example.footanalyzer
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -12,5 +13,6 @@ class ErrorActivity : AppCompatActivity() {
         val errorConnection= intent.getStringExtra("error_message") ?: "Fallo en la conexión"
         val errorTextView: TextView = findViewById(R.id.errorTextView)
         errorTextView.text = errorConnection
+        Log.d("ErrorActivity", "ErrorActivity lanzada correctamente")
     }
 }

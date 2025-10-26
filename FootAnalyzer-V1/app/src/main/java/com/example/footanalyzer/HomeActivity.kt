@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var runAlyzerController: RunAlyzerController
+    private var resultActivityLaunched = false
 
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.O)
@@ -25,13 +26,16 @@ class HomeActivity : AppCompatActivity() {
             context = this,
             fragmentManager = supportFragmentManager,
             onSuccess = { videoPath, angles, zipPath ->
-                val intent = Intent(this, ResultActivity::class.java).apply {
+                if (!resultActivityLaunched) {
+                    resultActivityLaunched = true
+                    val intent = Intent(this, ResultActivity::class.java).apply {
                     putExtra("video_path", videoPath)
                     putExtra("angle_left_foot", angles.first)
                     putExtra("angle_right_foot", angles.second)
                     putExtra("frames_zip_path", zipPath)
+                    }
+                    startActivity(intent)
                 }
-                startActivity(intent)
             },
             onError = { message ->
                 val intent = Intent(this, ErrorActivity::class.java)
@@ -56,6 +60,11 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resultActivityLaunched = false  // Restablecer el flag cuando la actividad vuelve a primer plano
     }
 
     override fun onDestroy() {

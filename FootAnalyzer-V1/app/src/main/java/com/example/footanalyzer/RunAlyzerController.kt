@@ -112,9 +112,6 @@ class RunAlyzerController(
                 val rightFoot = json.optDouble("angle_right_foot", -1.0)
                 if (leftFoot != -1.0 && rightFoot != -1.0) {
                     angles= Pair(leftFoot,rightFoot)
-                    endTime = System.currentTimeMillis()
-                    val timeTaken = endTime - startTime
-                    Log.d("Client", "Tiempo de procesamiento: $timeTaken ms")
                     tryFinishAnalysis()
                 } else {
                     stopLoading()
@@ -135,6 +132,9 @@ class RunAlyzerController(
                 zipFile.writeBytes(zipBytes)
                 zipPath=zipFile.absolutePath
                 tryFinishAnalysis()
+                endTime = System.currentTimeMillis()
+                val timeTaken = endTime - startTime
+                Log.d("Client", "Tiempo de procesamiento: $timeTaken ms")
             },
             onError = { err ->
                 stopLoading()
