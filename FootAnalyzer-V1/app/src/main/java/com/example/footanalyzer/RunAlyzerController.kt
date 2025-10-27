@@ -97,7 +97,7 @@ class RunAlyzerController(
                 onError = { err ->
                     polling = false
                     stopLoading()
-                    onError(err?.message ?: "Error desconocido al consultar el servidor.")
+                    onError("Error desconocido al consultar el servidor.")
                 }
             )
         }
@@ -138,7 +138,7 @@ class RunAlyzerController(
             },
             onError = { err ->
                 stopLoading()
-                onError("Error al recibir ZIP: ${err?.message}")
+                onError("Error al recibir ZIP")
             }
         )
     }
