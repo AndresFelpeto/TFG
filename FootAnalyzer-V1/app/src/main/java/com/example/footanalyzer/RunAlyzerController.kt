@@ -32,6 +32,7 @@ class RunAlyzerController(
     private var angles: Pair<Double, Double>?=null
     private var zipPath: String?=null
 
+
     private var startTime: Long = 0 // Para medir el tiempo de procesamiento total
     private var endTime: Long = 0
 
@@ -60,6 +61,8 @@ class RunAlyzerController(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startAnalysis(uri: Uri) {
+        angles=null
+        zipPath=null
         LoadingDialogManager.show(fragmentManager)
         LoadingDialogManager.setUploadingText()
         startTime = System.currentTimeMillis()
@@ -92,12 +95,11 @@ class RunAlyzerController(
                     videoFile.writeBytes(bytes)
                     videoPath=videoFile.absolutePath
                     fetchResults()
-                    fetchZip()
                 },
                 onError = { err ->
                     polling = false
                     stopLoading()
-                    onError("Error desconocido al consultar el servidor.")
+                    onError("Error al recibir el video.")
                 }
             )
         }
@@ -105,24 +107,28 @@ class RunAlyzerController(
     }
 
     private fun fetchResults() {
-        serverCommunicator.requestResultsFromServer(serverUrl) { result ->
-            if (result != null) {
+        serverCommunicator.requestResultsFromServer(
+            serverUrl = serverUrl,
+            onResult = { result ->
                 val json = JSONObject(result)
                 val leftFoot = json.optDouble("angle_left_foot", -1.0)
                 val rightFoot = json.optDouble("angle_right_foot", -1.0)
+
                 if (leftFoot != -1.0 && rightFoot != -1.0) {
-                    angles= Pair(leftFoot,rightFoot)
-                    tryFinishAnalysis()
+                    angles = Pair(leftFoot, rightFoot)
+                    fetchZip()
                 } else {
                     stopLoading()
-                    onError("No se recibieron los resultados del servidor.")
+                    onError("Fallo al recibir los resultados")
                 }
-            } else {
+            },
+            onError = { err ->
                 stopLoading()
-                onError("Fallo en la conexión al recibir resultados.")
+                onError("Fallo al recibir los resultados")
             }
-        }
+        )
     }
+
 
     private fun fetchZip() {
         serverCommunicator.requestFramesZipFromServer(
@@ -131,19 +137,19 @@ class RunAlyzerController(
                 val zipFile = File(context.cacheDir, "frames_seleccionados.zip")
                 zipFile.writeBytes(zipBytes)
                 zipPath=zipFile.absolutePath
-                tryFinishAnalysis()
+                finishAnalysis()
                 endTime = System.currentTimeMillis()
                 val timeTaken = endTime - startTime
                 Log.d("Client", "Tiempo de procesamiento: $timeTaken ms")
             },
             onError = { err ->
                 stopLoading()
-                onError("Error al recibir ZIP")
+                    onError("Fallo al recibir los fotogramas")
             }
         )
     }
 
-    private fun tryFinishAnalysis() {
+    private fun finishAnalysis() {
         val video = videoPath
         val a = angles
         val zip = zipPath

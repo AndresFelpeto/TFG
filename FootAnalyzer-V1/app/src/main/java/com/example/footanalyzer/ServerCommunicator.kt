@@ -132,25 +132,42 @@ class ServerCommunicator(private val context: Context) {
         })
     }
 
-    fun requestResultsFromServer(serverUrl: String, callback: (String?) -> Unit) {
+    fun requestResultsFromServer(
+        serverUrl: String,
+        onResult: (resultJson: String) -> Unit,
+        onError: (Throwable?) -> Unit = {}
+    ) {
+        val pid = processId
+        if (pid.isNullOrEmpty()) {
+            onError(IllegalStateException("processId nulo"))
+            return
+        }
+
         val request = Request.Builder()
-            .url("$serverUrl/get_results?process_id=$processId")
+            .url("$serverUrl/get_results?process_id=$pid")
             .get()
             .build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d("VideoSender", "Error al recibir los resultados del servidor")
-                callback(null)
+                onError(e)
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val json = response.body?.string()
-                Log.d("VideoSender", "Resultados recibidos: $json")
-                callback(json)
+                response.use {
+                    val body = it.body?.string()
+                    if (!body.isNullOrEmpty()) {
+                        Log.d("VideoSender", "Resultados recibidos: $body")
+                        onResult(body)
+                    } else {
+                        onError(IOException("Respuesta vacía del servidor"))
+                    }
+                }
             }
         })
     }
+
 
     fun requestFramesZipFromServer(
         serverUrl: String,
