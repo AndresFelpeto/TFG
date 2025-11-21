@@ -81,7 +81,7 @@ def send_video():
         return jsonify({"status": "error", "message": "El video procesado no se encuentra"}), 500
 
     print(f"🎥 Enviando video procesado: {processed_video_path}")
-    return send_file(processed_video_path, mimetype="video/mp4")
+    return send_file(processed_video_path, mimetype="video/mp4"), 200
 
 @app.route("/get_results", methods=["GET"])
 def get_pisada():
@@ -96,7 +96,7 @@ def get_pisada():
     return jsonify({
         "angle_left_foot": procesos[pid]["angles"]["left"],
         "angle_right_foot": procesos[pid]["angles"]["right"]
-    })
+    }), 200
 
 @app.route("/get_frames_zip", methods=["GET"])
 def get_frames_zip():
@@ -114,7 +114,7 @@ def get_frames_zip():
         return jsonify({"status": "error", "message": "El archivo ZIP no se encuentra"}), 500
 
     print(f"📦 Enviando ZIP de frames: {zip_path}")
-    return send_file(zip_path, mimetype="application/zip", as_attachment=True)
+    return send_file(zip_path, mimetype="application/zip", as_attachment=True), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",

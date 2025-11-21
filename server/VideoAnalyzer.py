@@ -5,9 +5,6 @@ import os
 from Foot_Step_Recognition import foot_step_frames
 from Progress import Progress
 import zipfile
-import csv
-import time
-import logging
 
 def calculate_angle(ankle, knee, lado='izquierdo'):
     vec_leg = np.array([ankle[0] - knee[0], ankle[1] - knee[1]])
@@ -38,30 +35,30 @@ def mean_data(valores, k=2):
     media = np.mean(valores)
     std = np.std(valores)
 
-    # Filtrar valores dentro del rango [media - k*σ, media + k*σ]
     filtrados = []
     for v in valores:
         if abs(v - media)<=k*std:
             filtrados.append(v)
 
-    # Si todos fueron descartados, devolver la media original
     return np.mean(filtrados) if filtrados else media
 
 def seleccionar_frames_mas_cercanos(frames, target_angle, etiqueta, n=4):
-    
-    frames_filtrados = []
-    
-    for frame in frames:
-        if frame["etiqueta"] == etiqueta and "angulo" in frame:
-            frames_filtrados.append(frame)
+
+    frames_filtrados = [
+        frame for frame in frames
+        if frame.get("etiqueta") == etiqueta and isinstance(frame.get("angulo"), (int, float))
+    ]
 
     if not frames_filtrados:
         return []
 
-    def diferencia_angular(frame):
-        return abs(frame["angulo"] - target_angle)
+    frames_ordenados = sorted(
+        frames_filtrados,
+        key=lambda frame: abs(frame["angulo"] - target_angle)
+    )
 
-    return sorted(frames_filtrados, key=diferencia_angular)
+    return frames_ordenados[:n]
+
 
 
 def guardar_frames_zip(frames_izquierda, frames_derecha, output_dir):
@@ -84,7 +81,6 @@ def guardar_frames_zip(frames_izquierda, frames_derecha, output_dir):
     return zip_path
 
 def analyze_video(video_path, progress: Progress | None = None, progress_step: Progress | None = None):
-    start_time = time.time()  # Marca el tiempo de inicio
     mp_pose = mp.solutions.pose
     pose = mp_pose.Pose()
     if progress_step is None:
@@ -94,11 +90,6 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
     cap = cv2.VideoCapture(video_path)
     video_name = os.path.splitext(os.path.basename(video_path))[0]
     output_dir = os.path.join("videos_resultado", video_name)
-    os.makedirs(output_dir, exist_ok=True)
-    csv_path = os.path.join(output_dir, "angulos_pisada.csv")
-    csv_file = open(csv_path, mode='w', newline='')
-    csv_writer = csv.writer(csv_file)
-    csv_writer.writerow(["frame_index", "lado", "angulo"])
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -123,10 +114,9 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
     left_angles = []
     right_angles = []
 
-    detected_frames = []  # <<< añadido >>>
+    detected_frames = []  
 
     while cap.isOpened():
-        logging.basicConfig(level=logging.DEBUG)
         ret, frame = cap.read()
         if not ret:
             break
@@ -162,31 +152,29 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
             ]:
                 cv2.circle(frame, (x, y), 6, color, -1)
 
-            frame_labeled = None  # <<< añadido >>>
+            frame_labeled = None  
 
             if frame_idx in pisadas_final_i:
                 angle = calculate_angle((x_al, y_al), (x_kl, y_kl), lado='izquierdo')
                 left_angles.append(angle)
-                frame_labeled = frame.copy()  # <<< añadido >>>
+                frame_labeled = frame.copy()  
                 detected_frames.append({
                     'frame_index': frame_idx,
                     'etiqueta': 'izquierda',
                     'imagen': frame_labeled,
                     'angulo': angle
                 })
-                csv_writer.writerow([frame_idx, 'izquierda', angle])
 
             if frame_idx in pisadas_final_d:
                 angle = calculate_angle((x_ar, y_ar), (x_kr, y_kr), lado='derecho')
                 right_angles.append(angle)
-                frame_labeled = frame.copy()  # <<< añadido >>>
+                frame_labeled = frame.copy()  
                 detected_frames.append({
                     'frame_index': frame_idx,
                     'etiqueta': 'derecha',
                     'imagen': frame_labeled,
                     'angulo': angle 
                 })
-                csv_writer.writerow([frame_idx, 'derecha', angle]) 
 
         writer.write(frame)
         frame_idx += 1
@@ -216,9 +204,4 @@ def analyze_video(video_path, progress: Progress | None = None, progress_step: P
 
 
     pose.close()
-    csv_file.close()
-    end_time = time.time()  # Marca el tiempo de fin
-    elapsed_time = end_time - start_time  # Tiempo total en segundos
-    logging.debug(f"Tiempo de analyze_video: {elapsed_time:.5f} segundos")
-
     return out_path, avg_left, avg_right, zip_path

@@ -1,13 +1,10 @@
 import cv2
 import mediapipe as mp
 from Progress import Progress
-import time
-import logging
+
 
 
 def foot_step_frames(video_path, progress: Progress | None = None):
-    logging.basicConfig(level=logging.DEBUG)
-    start_time = time.time()  # Marca el tiempo de inicio
     mp_pose = mp.solutions.pose
     pose = mp_pose.Pose(static_image_mode=False)
 
@@ -28,23 +25,21 @@ def foot_step_frames(video_path, progress: Progress | None = None):
 
     frame_idx = 0
 
-    # Parámetros de detección
+
     umbral_subida = 3
     margen_altura = 20
 
-    # Talón derecho
+
     prev_heel_y_d = None
     max_heel_y_d = 0.0
     frames_ignorados_d = 0
     pisadas_detectadas_d = []
 
-    # Talón izquierdo
     prev_heel_y_i = None
     max_heel_y_i = 0.0
     frames_ignorados_i = 0
     pisadas_detectadas_i = []
 
-    # Para guardar las alturas por frame
     altura_heel_d_por_frame = {}
     altura_heel_i_por_frame = {}
 
@@ -64,7 +59,6 @@ def foot_step_frames(video_path, progress: Progress | None = None):
         if results.pose_landmarks:
             lm = results.pose_landmarks.landmark
 
-            # Talón derecho
             heel_d = lm[mp_pose.PoseLandmark.RIGHT_HEEL]
             heel_y_d = heel_d.y * height
             altura_heel_d_por_frame[frame_idx] = heel_y_d
@@ -82,7 +76,6 @@ def foot_step_frames(video_path, progress: Progress | None = None):
 
             prev_heel_y_d = heel_y_d
 
-            # Talón izquierdo
             heel_i = lm[mp_pose.PoseLandmark.LEFT_HEEL]
             heel_y_i = heel_i.y * height
             altura_heel_i_por_frame[frame_idx] = heel_y_i
@@ -106,12 +99,11 @@ def foot_step_frames(video_path, progress: Progress | None = None):
             frames_ignorados_i -= 1
 
         frame_idx += 1
-        progress.current = frame_idx  # <<< actualizar avance
+        progress.current = frame_idx
 
     cap.release()
     pose.close()
 
-    # Post-procesamiento: escoger el frame más bajo entre f, f-1, f-2
     def refinar_frames(lista_frames, alturas):
         pisadas_finales = []
         for f in lista_frames:
@@ -129,9 +121,5 @@ def foot_step_frames(video_path, progress: Progress | None = None):
 
     progress.done = True
     progress.current = progress.total
-    end_time = time.time()  # Marca el tiempo de fin
-    elapsed_time = end_time - start_time  # Tiempo total en segundos
-    logging.debug(f"Tiempo de analyze_video: {elapsed_time:.5f} segundos")
-
 
     return pisadas_final_d, pisadas_final_i, progress
