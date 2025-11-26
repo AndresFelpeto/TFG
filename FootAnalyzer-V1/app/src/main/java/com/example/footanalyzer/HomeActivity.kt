@@ -6,17 +6,16 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-
+import androidx.activity.OnBackPressedCallback
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var runAlyzerController: RunAlyzerController
     private var resultActivityLaunched = false
+    var isActive = true
 
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.O)
@@ -65,10 +64,33 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        resultActivityLaunched = false  // Restablecer el flag cuando la actividad vuelve a primer plano
+        resultActivityLaunched = false
     }
 
     override fun onDestroy() {
         super.onDestroy()
     }
+
+    override fun onStart() {
+        super.onStart()
+        isActive=true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isActive = false
+        runAlyzerController.cancelAnalysis()
+        LoadingDialogManager.cancel()
+    }
+
+
+    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
+        runAlyzerController.cancelAnalysis()
+        return super.getOnBackInvokedDispatcher()
+    }
+
+    fun cancelAnalysisDesdeDialog() {
+        runAlyzerController.cancelAnalysis()
+    }
+
 }

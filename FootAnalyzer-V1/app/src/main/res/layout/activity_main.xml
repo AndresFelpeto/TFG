@@ -24,7 +24,7 @@
                 android:layout_marginTop="44dp"
                 android:fontFamily="@font/centurygothic_bold"
                 android:text="RUN"
-                android:textColor="@color/black"
+                style="@style/textColor"
                 android:textSize="60sp"
                 android:textStyle="bold|italic"
                 app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
                 android:layout_height="85dp"
                 android:fontFamily="@font/centurygothic"
                 android:text="alyze"
-                android:textColor="@color/black"
+                style="@style/textColor"
                 android:textSize="60sp"
                 app:layout_constraintStart_toEndOf="@id/title3"
                 app:layout_constraintTop_toTopOf="@id/title3" />
@@ -44,37 +44,36 @@
 
         <ImageButton
                 android:id="@+id/botonSeleccionarVideo"
-                android:layout_width="51dp"
-                android:layout_height="49dp"
-                android:layout_marginBottom="204dp"
+                android:layout_width="116dp"
+                android:layout_height="74dp"
+                android:layout_marginBottom="200dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/seleccionar_video"
                 android:scaleType="fitXY"
-                android:src="@drawable/cruz"
                 android:visibility="visible"
+                style="@style/botonCruz"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints"
-                app:layout_constraintHorizontal_bias="0.501" />
+                tools:ignore="MissingConstraints" />
 
         <ImageView
-                android:id="@+id/pie_blanco"
+                android:id="@+id/pie_izquierdo"
                 android:layout_width="126dp"
                 android:layout_height="75dp"
                 android:layout_marginStart="60dp"
                 android:layout_marginTop="352dp"
-                android:src="@drawable/pie_blanco"
+                style="@style/pieInicioIzq"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-                android:id="@+id/pie_negro"
+                android:id="@+id/pie_derecho"
                 android:layout_width="126dp"
                 android:layout_height="75dp"
                 android:layout_marginStart="228dp"
                 android:layout_marginTop="352dp"
-                android:src="@drawable/pie_negro"
+                style="@style/pieInicioDer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -83,9 +82,8 @@
                 android:layout_width="197dp"
                 android:layout_height="105dp"
                 android:layout_marginBottom="56dp"
-                android:background="@android:color/transparent"
                 android:text="¿En qué consiste un análisis del tipo de pisada?"
-                android:textColor="#000000"
+                style="@style/textosColores"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

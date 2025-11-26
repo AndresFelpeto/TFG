@@ -1,4 +1,4 @@
-import uuid
+import secrets
 from flask import Flask, request, jsonify, send_file
 import os
 from datetime import datetime
@@ -10,30 +10,32 @@ app = Flask(__name__)
 procesos = {}
 UPLOAD_FOLDER = "videos_recibidos"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-remaining=1
-def procesar_video(pid, filepath):
+
+
+def procesar_video(token, filepath):
     try:
-        step_progress = procesos[pid]["progress_step"]
-        analyzer_progress = procesos[pid]["progress_analyzer"]
-        processed_video_path, angle_left_foot, angle_right_foot, frames_path = analyze_video(filepath,analyzer_progress,step_progress)
-        procesos[pid]["status"] = "done"
-        procesos[pid]["output"] = processed_video_path
-        procesos[pid]["angles"] = {
+        step_progress = procesos[token]["progress_step"]
+        analyzer_progress = procesos[token]["progress_analyzer"]
+        processed_video_path, angle_left_foot, angle_right_foot, frames_path = analyze_video(filepath, analyzer_progress, step_progress)
+        procesos[token]["status"] = "done"
+        procesos[token]["output"] = processed_video_path
+        procesos[token]["angles"] = {
             "left": angle_left_foot,
             "right": angle_right_foot
         }
-        procesos[pid]["frames_zip"] = frames_path
-        print(f"Análisis completado para {pid}")
+        procesos[token]["frames_zip"] = frames_path
+        print(f"Análisis completado para token: {token}")
     except Exception as e:
-        procesos[pid]["status"] = "error"
-        print(f"Error procesando {pid}: {e}")
+        procesos[token]["status"] = "error"
+        print(f"Error procesando token {token}: {e}")
+
 
 @app.route("/upload_video", methods=["POST"])
 def upload_video():
-    pid = str(uuid.uuid4())
+    token = secrets.token_hex(16)
     progress_step = Progress()
     progress_analyzer = Progress()
-    procesos[pid] = {
+    procesos[token] = {
         "status": "processing",
         "percent_completed": 1,
         "output": None,
@@ -47,65 +49,65 @@ def upload_video():
         return jsonify({"status": "error", "message": "No se recibió el archivo 'video'"}), 400
 
     file = request.files["video"]
-    if file.filename == "":
-        return jsonify({"status": "error", "message": "El archivo no tiene nombre"}), 400
-
     filename = datetime.now().strftime("video_%Y%m%d_%H%M%S.mp4")
     filepath = os.path.join(UPLOAD_FOLDER, filename)
     file.save(filepath)
 
-    
-    threading.Thread(target=procesar_video, args=(pid, filepath)).start()
+    threading.Thread(target=procesar_video, args=(token, filepath)).start()
     return jsonify({
         "status": "ok",
-        "process_id": pid,
+        "token": token,
         "message": "Video recibido, procesando"
     }), 200
 
+
 @app.route("/request_video", methods=["GET"])
 def send_video():
-    pid = request.args.get("process_id")
-    if not pid or pid not in procesos:
-        return jsonify({"status": "error", "message": "ID inválido"}), 400
+    token = request.args.get("token")
+    if not token or token not in procesos:
+        return jsonify({"status": "error", "message": "Token inválido"}), 400
 
-    
-    if procesos[pid]["status"] == "error":
+    if procesos[token]["status"] == "error":
         return jsonify({"status": "error", "message": "Fallo desconocido"}), 500
 
-    if procesos[pid]["status"] != "done" or not procesos[pid].get("output"):
-        percent_completed = (procesos[pid]["progress_analyzer"].percent_completed() + procesos[pid]["progress_step"].percent_completed()) / 2
+    if procesos[token]["status"] != "done" or not procesos[token].get("output"):
+        percent_completed = (
+            procesos[token]["progress_analyzer"].percent_completed() +
+            procesos[token]["progress_step"].percent_completed()
+        ) / 2
         return jsonify({"status": "processing", "remaining": int(percent_completed)}), 200
 
-    processed_video_path = procesos[pid]["output"]
+    processed_video_path = procesos[token]["output"]
     if not os.path.exists(processed_video_path):
         return jsonify({"status": "error", "message": "El video procesado no se encuentra"}), 500
 
     print(f"🎥 Enviando video procesado: {processed_video_path}")
     return send_file(processed_video_path, mimetype="video/mp4"), 200
 
+
 @app.route("/get_results", methods=["GET"])
 def get_pisada():
-    pid = request.args.get("process_id")
-    if not pid or pid not in procesos:
-        return jsonify({"status": "error", "message": "ID inválido"}), 400
+    token = request.args.get("token")
+    if not token or token not in procesos:
+        return jsonify({"status": "error", "message": "Token inválido"}), 400
 
-    if procesos[pid]["status"] != "done":
+    if procesos[token]["status"] != "done":
         return jsonify({"status": "error", "message": "Procesamiento no completado"}), 400
 
-    print(f"🔓 Enviando datos de pisada para {pid}")
+    print(f"🔓 Enviando datos de pisada para token: {token}")
     return jsonify({
-        "angle_left_foot": procesos[pid]["angles"]["left"],
-        "angle_right_foot": procesos[pid]["angles"]["right"]
+        "angle_left_foot": procesos[token]["angles"]["left"],
+        "angle_right_foot": procesos[token]["angles"]["right"]
     }), 200
+
 
 @app.route("/get_frames_zip", methods=["GET"])
 def get_frames_zip():
-    pid = request.args.get("process_id")
-    if not pid or pid not in procesos:
-        return jsonify({"status": "error", "message": "ID inválido"}), 400
+    token = request.args.get("token")
+    if not token or token not in procesos:
+        return jsonify({"status": "error", "message": "Token inválido"}), 400
 
-    info = procesos[pid]
-
+    info = procesos[token]
     if info["status"] != "done" or not info.get("frames_zip"):
         return jsonify({"status": "error", "message": "Frames no disponibles aún"}), 400
 
@@ -116,12 +118,15 @@ def get_frames_zip():
     print(f"📦 Enviando ZIP de frames: {zip_path}")
     return send_file(zip_path, mimetype="application/zip", as_attachment=True), 200
 
-if __name__ == "__main__":
+
+"""if __name__ == "__main__":
     app.run(host="0.0.0.0",
-    port=443,
-    ssl_context=(
-        "/etc/letsencrypt/live/andrestfg.es/fullchain.pem",
-        "/etc/letsencrypt/live/andrestfg.es/privkey.pem"
-    ),
-    debug=True
-)
+            port=443,
+            ssl_context=(
+                "/etc/letsencrypt/live/andrestfg.es/fullchain.pem",
+                "/etc/letsencrypt/live/andrestfg.es/privkey.pem"
+            ),
+            debug=True)
+            """
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

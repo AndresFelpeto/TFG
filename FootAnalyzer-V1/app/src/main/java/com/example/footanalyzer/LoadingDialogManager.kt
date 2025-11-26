@@ -11,6 +11,7 @@ object LoadingDialogManager {
     private var isTaskComplete = false
     private val handler = Handler(Looper.getMainLooper())
     private var dialogFragment: LoadingDialogFragment? = null
+    private var isActive = true
 
     // Reiniciar progreso
     private fun resetProgress() {
@@ -32,6 +33,7 @@ object LoadingDialogManager {
     }
 
     fun show(fragmentManager: FragmentManager) {
+
         dialogFragment?.dismissAllowingStateLoss()
         dialogFragment = LoadingDialogFragment()
 
@@ -66,5 +68,13 @@ object LoadingDialogManager {
             dialogFragment?.updateProgressText("Analizando (2/2)")
         }
     }
+
+    fun cancel() {
+        isActive = false
+        handler.removeCallbacksAndMessages(null)
+        dialogFragment?.dismissAllowingStateLoss()
+        dialogFragment = null
+    }
+
 
 }

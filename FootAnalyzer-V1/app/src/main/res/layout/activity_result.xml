@@ -1,193 +1,190 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_layout2"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="24dp"
-    tools:context=".ResultActivity">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/root_layout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:visibility="visible">
 
 
     <TextView
-        android:id="@+id/title3"
-        android:layout_width="134dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="44dp"
-        android:fontFamily="@font/centurygothic_bold"
-        android:text="RUN"
-        android:textColor="@color/black"
-        android:textSize="60sp"
-        android:textStyle="bold|italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/title3"
+            android:layout_width="134dp"
+            android:layout_height="82dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="44dp"
+            android:fontFamily="@font/centurygothic_bold"
+            android:text="RUN"
+            style="@style/textColor"
+            android:textSize="60sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/title4"
-        android:layout_width="193dp"
-        android:layout_height="84dp"
-        android:fontFamily="@font/centurygothic"
-        android:text="alyzed"
-        android:textColor="@color/black"
-        android:textSize="60sp"
-        app:layout_constraintStart_toEndOf="@id/title3"
-        app:layout_constraintTop_toTopOf="@id/title3" />
+            android:id="@+id/title4"
+            android:layout_width="193dp"
+            android:layout_height="84dp"
+            android:fontFamily="@font/centurygothic"
+            android:text="alyzed"
+            style="@style/textColor"
+            android:textSize="60sp"
+            app:layout_constraintStart_toEndOf="@id/title3"
+            app:layout_constraintTop_toTopOf="@id/title3" />
 
     <LinearLayout
-        android:id="@+id/tipos_pisada"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginTop="180dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            android:id="@+id/tipos_pisada"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="180dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/supinador"
-            android:layout_width="116dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/cuadro_supinador"
-            android:fontFamily="@font/centurygothic"
-            android:gravity="center"
-            android:text="Supinador"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+                android:id="@+id/supinador"
+                android:layout_width="116dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/cuadro_supinador"
+                android:fontFamily="@font/centurygothic"
+                android:gravity="center"
+                android:text="Supinador"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/neutro"
-            android:layout_width="112dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/cuadro_neutro"
-            android:fontFamily="@font/centurygothic"
-            android:gravity="center"
-            android:text="Neutro"
-            android:textColor="#000000"
-            android:textSize="16sp" />
+                android:id="@+id/neutro"
+                android:layout_width="112dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/cuadro_neutro"
+                android:fontFamily="@font/centurygothic"
+                android:gravity="center"
+                android:text="Neutro"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/pronador"
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/cuadro_pronador"
-            android:fontFamily="@font/centurygothic"
-            android:gravity="center"
-            android:text="Pronador"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+                android:id="@+id/pronador"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/cuadro_pronador"
+                android:fontFamily="@font/centurygothic"
+                android:gravity="center"
+                android:text="Pronador"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
 
     </LinearLayout>
 
 
     <ImageView
-        android:id="@+id/pie_izquierdo"
-        android:layout_width="107dp"
-        android:layout_height="149dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="264dp"
-        android:src="@drawable/pie_izquierdo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/pie_izquierdo"
+            android:layout_width="195dp"
+            android:layout_height="243dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="216dp"
+            style="@style/pieResultIzq"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/pie_derecho"
-        android:layout_width="108dp"
-        android:layout_height="149dp"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="264dp"
-        android:src="@drawable/pie_derecho"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/TipoPisadaIzquierda"
-        android:layout_width="171dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="424dp"
-        android:fontFamily="@font/centurygothic"
-        android:text="Supinador"
-        android:textAlignment="center"
-        android:textColor="#050505"
-        android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/pie_derecho"
+            android:layout_width="197dp"
+            android:layout_height="240dp"
+            android:layout_marginStart="164dp"
+            android:layout_marginTop="220dp"
+            style="@style/pieResultDer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/TipoPisadaDerecha"
-        android:layout_width="182dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="424dp"
-        android:fontFamily="@font/centurygothic"
-        android:text="Supinador"
-        android:textAlignment="center"
-        android:textColor="#050505"
-        android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/TipoPisadaIzquierda"
+            android:layout_width="171dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="424dp"
+            android:fontFamily="@font/centurygothic"
+            android:text="Supinador"
+            android:textAlignment="center"
+            style="@style/textColor"
+            android:textSize="30sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/TipoPisadaDerecha"
+            android:layout_width="182dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="168dp"
+            android:layout_marginTop="424dp"
+            android:fontFamily="@font/centurygothic"
+            android:text="Supinador"
+            android:textAlignment="center"
+            style="@style/textColor"
+            android:textSize="30sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/botonGuardarVideoEnGaleria"
-        android:layout_width="176dp"
-        android:layout_height="70dp"
-        android:layout_marginBottom="12dp"
-        android:background="@android:color/transparent"
-        android:text="Guardar video en la galería"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
+            android:id="@+id/botonGuardarVideoEnGaleria"
+            android:layout_width="176dp"
+            android:layout_height="70dp"
+            android:layout_marginBottom="12dp"
+            android:background="@android:color/transparent"
+            android:text="Guardar video en la galería"
+            style="@style/textColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
             android:id="@+id/mensajeGuardado"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Video guardado en la galería"
-            android:textColor="#000000"
+            style="@style/textColor"
             android:textSize="16sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/botonGuardarVideoEnGaleria"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp" />
 
 
     <Button
-        android:id="@+id/verPisadaIzquierda"
-        android:layout_width="170dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="96dp"
-        android:background="@android:color/transparent"
-        android:text="Ver pisada izquierda"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+            android:id="@+id/verPisadaIzquierda"
+            android:layout_width="170dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="96dp"
+            android:background="@android:color/transparent"
+            android:text="Ver pisada izquierda"
+            style="@style/textColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/verPisadaDerecha"
-        android:layout_width="170dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="96dp"
-        android:background="@android:color/transparent"
-        android:text="Ver pisada derecha"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
+            android:id="@+id/verPisadaDerecha"
+            android:layout_width="170dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="96dp"
+            android:background="@android:color/transparent"
+            android:text="Ver pisada derecha"
+            style="@style/textColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     <ImageView
             android:id="@+id/marcador_hacia_arriba"
             android:layout_width="15dp"
             android:layout_height="30dp"
-            android:src="@drawable/marcador_hacia_arriba"
+            style="@style/marcador_hacia_arriba"
             android:scaleType="fitXY"
             app:layout_constraintTop_toBottomOf="@id/tipos_pisada"
             app:layout_constraintStart_toStartOf="@id/tipos_pisada"
@@ -197,11 +194,9 @@
             android:id="@+id/marcador_hacia_abajo"
             android:layout_width="21dp"
             android:layout_height="32dp"
-            android:src="@drawable/marcador_hacia_abajo"
+            style="@style/marcador_hacia_abajo"
             app:layout_constraintBottom_toTopOf="@id/tipos_pisada"
-            app:layout_constraintStart_toStartOf="@id/tipos_pisada"
-            app:tint="#000000" />
-
+            app:layout_constraintStart_toStartOf="@id/tipos_pisada"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,8 @@ class RunAlyzerController(
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private lateinit var videoExtractor: VideoExtractor
     private lateinit var serverCommunicator: ServerCommunicator
-    private val serverUrl = "https://andrestfg.es"
+    private val serverUrl = "http://192.168.1.90:5000"
+    // private val serverUrl = "https://andrestfg.es"
     private val handler = Handler(Looper.getMainLooper())
     private val pollingIntervalMs = 3000L
     private var polling = false
@@ -35,6 +36,9 @@ class RunAlyzerController(
 
     private var startTime: Long = 0 // Para medir el tiempo de procesamiento total
     private var endTime: Long = 0
+
+    private var userCancelled = false
+
 
     init {
         serverCommunicator = ServerCommunicator(context)
@@ -61,6 +65,7 @@ class RunAlyzerController(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startAnalysis(uri: Uri) {
+        userCancelled = false
         angles=null
         zipPath=null
         LoadingDialogManager.show(fragmentManager)
@@ -150,13 +155,15 @@ class RunAlyzerController(
     }
 
     private fun finishAnalysis() {
+        if (userCancelled) return
         val video = videoPath
         val a = angles
         val zip = zipPath
-
-        if (video != null && a != null && zip != null) {
-            stopLoading()
-            onSuccess(video, a, zip)
+        if ((context as HomeActivity).isActive){
+            if (video != null && a != null && zip != null) {
+                stopLoading()
+                onSuccess(video, a, zip)
+            }
         }
     }
 
@@ -165,4 +172,14 @@ class RunAlyzerController(
         handler.removeCallbacksAndMessages(null)
         LoadingDialogManager.taskComplete()
     }
+
+    fun cancelAnalysis() {
+        userCancelled = true
+        polling = false
+        handler.removeCallbacksAndMessages(null)
+        LoadingDialogManager.cancel()
+    }
+
+
+
 }

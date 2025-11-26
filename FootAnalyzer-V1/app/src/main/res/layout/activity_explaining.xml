@@ -3,7 +3,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:visibility="visible">
 
     <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
@@ -16,27 +17,29 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
                 android:id="@+id/boton_izquierda"
+                style="@style/textosColores"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="#000000"
-                android:textColor="#FFFFFF"
                 android:text="←"
-                android:textSize="24sp"
-                android:textAlignment="center" />
+                android:visibility="visible"
+                android:textAlignment="center"
+                android:textSize="24dp"/>
+
 
         <Button
                 android:id="@+id/boton_derecha"
+                style="@style/textosColores"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:visibility="visible"
                 android:layout_weight="1"
-                android:backgroundTint="#000000"
-                android:textColor="#FFFFFF"
                 android:text="→"
-                android:textSize="24sp"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="24dp"
+                />
     </LinearLayout>
 
 </LinearLayout>
